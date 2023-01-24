@@ -1,3 +1,5 @@
+Blixtlåset Electronics App
+
 Welcome to our mobile app that helps kids learn electronics by creating circuits on their phone!
 
 With this app, students can experiment with building different circuits and learn about the basic principles of electricity and electronics. The user-friendly interface allows students to easily drag and drop components to create working circuits.
