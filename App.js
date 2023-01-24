@@ -1,11 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Dimensions, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import CreateComponent from './components/CreateComponent';
+import DragComponent from './components/DragComponent';
+import ElectricComponent from './components/ElectricComponent';
+import Battery from './components/electronics/Battery';
+import Resistor from './components/electronics/Resistor';
 
 export default function App() {
+
+  const [components, setComponents] = useState([])
+
+  const onDragEnd = (position, index) => {
+    // If component is dropped inside library, remove it
+    if (position.y <= 200) {
+      setComponents((prev) => {
+        const newComponents = [...prev]
+        newComponents.splice(index, 1)
+        return newComponents
+      })
+      return
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <View style={styles.library}>
+        <CreateComponent setComponents={setComponents}>
+          <Battery />
+        </CreateComponent>
+        <CreateComponent setComponents={setComponents}>
+          <Resistor />
+        </CreateComponent>
+      </View>
+      {components.map((component, index) => {
+        return (
+          <DragComponent key={index} onDragEnd={(e) => onDragEnd(e, index)}>
+            {component}
+          </DragComponent>
+        )
+      })}
+      <Text>{components.length}</Text>
     </View>
   );
 }
@@ -14,7 +48,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
+  library: {
+    position: 'absolute',
+    height: 200,
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'slategrey',
+    paddingHorizontal: 25,
+    paddingTop: 80,
+    flexDirection: 'row'
+  }
 });
