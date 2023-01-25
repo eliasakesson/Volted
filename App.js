@@ -1,63 +1,22 @@
-import React, { useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import CreateComponent from './components/CreateComponent';
-import DragComponent from './components/DragComponent';
-import ElectricComponent from './components/ElectricComponent';
-import Battery from './components/electronics/Battery';
-import Resistor from './components/electronics/Resistor';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+
+import HomeScreen from './Screens/HomeScreen';
+import SplashScreen from './Screens/SplashScreen';
+import SandboxScreen from './Screens/SandboxScreen';
+import { StatusBar } from 'expo-status-bar';
+
+const Stack = createStackNavigator();
 
 export default function App() {
-
-  const [components, setComponents] = useState([])
-
-  const onDragEnd = (position, index) => {
-    // If component is dropped inside library, remove it
-    if (position.y <= 200) {
-      setComponents((prev) => {
-        const newComponents = [...prev]
-        newComponents.splice(index, 1)
-        return newComponents
-      })
-      return
-    }
-  }
-
   return (
-    <View style={styles.container}>
-      <View style={styles.library}>
-        <CreateComponent setComponents={setComponents}>
-          <Battery />
-        </CreateComponent>
-        <CreateComponent setComponents={setComponents}>
-          <Resistor />
-        </CreateComponent>
-      </View>
-      {components.map((component, index) => {
-        return (
-          <DragComponent key={index} onDragEnd={(e) => onDragEnd(e, index)}>
-            {component}
-          </DragComponent>
-        )
-      })}
-      <Text>{components.length}</Text>
-    </View>
+    <NavigationContainer> 
+      <StatusBar style="dark" /> 
+      <Stack.Navigator>
+        <Stack.Screen name="Splash" component={SplashScreen} options={{animationEnabled: false, headerShown: false}} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Sandbox" component={SandboxScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  library: {
-    position: 'absolute',
-    height: 200,
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'slategrey',
-    paddingHorizontal: 25,
-    paddingTop: 80,
-    flexDirection: 'row'
-  }
-});
