@@ -1,33 +1,33 @@
 import React, { useEffect } from 'react';
 import { Button, Dimensions, StyleSheet, Text, View } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function HomeScreen({ navigation }) {
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.welcomeText}>Welcome Back <Text style={styles.welcomeTextBold}>Elias</Text></Text>
+            <Text style={styles.welcomeText}>Välkommen tillbaka <Text style={{fontWeight: 'bold'}}>Elias</Text></Text>
             <View style={styles.largeButtons}>
-                <TouchableOpacity onPress={() => navigation.navigate("Sandbox")} style={styles.largeButton}>
-                    <AntDesign name="flag" size={50} color="black" />
-                    <Text style={styles.largeButtonText}>Sandbox</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.largeButton}>
-                    <AntDesign name="book" size={50} color="black" />
-                    <Text style={styles.largeButtonText}>Other</Text>
-                </TouchableOpacity>
+                <TouchableWithoutFeedback onPress={() => navigation.navigate("Sandbox")} style={styles.largeButton}>
+                    <AntDesign name="flag" size={50} color="#6495ED" />
+                    <Text style={styles.largeButtonText}>Sandlådsläge</Text>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback style={styles.largeButton}>
+                    <AntDesign name="search1" size={50} color="#6495ED" />
+                    <Text style={styles.largeButtonText}>Utforska</Text>
+                </TouchableWithoutFeedback>
             </View>
-            <Text style={styles.headerText}>Latest</Text>
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Project 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Project 2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Project 3</Text>
-            </TouchableOpacity>
-            <Button onPress={() => navigation.replace("Splash")} title="Go to splash"></Button>
+            <Text style={styles.headerText}>Senaste</Text>
+            <TouchableWithoutFeedback style={styles.button}>
+                <Text style={styles.buttonText}>Projekt 1</Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback style={styles.button}>
+                <Text style={styles.buttonText}>Projekt 2</Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback style={styles.button}>
+                <Text style={styles.buttonText}>Projekt 3</Text>
+            </TouchableWithoutFeedback>
+            <Button onPress={() => navigation.replace("Splash")} title="Show splashscreen (Temporary)"></Button>
         </ScrollView>
     );
 }
@@ -35,22 +35,29 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        paddingVertical: 50,
+        paddingVertical: 100,
         paddingHorizontal: 25,
+    
+    },
+    background: {
+        position: 'absolute',
+        top: 100,
+        left: -25,
+        width: Dimensions.get('window').width,
+        height: 2000,
+        borderRadius: 15,
     },
     welcomeText: {
         fontSize: 25,
         marginBottom: 25,
-    },
-    welcomeTextBold: {
-        fontWeight: 'bold',
+        color: '#fff',
     },
     headerText: {
         fontSize: 25,
         fontWeight: 'bold',
         marginTop: 25,
         marginBottom: 15,
+        color: '#fff',
     },
     largeButtons: {
         flexDirection: 'row',
@@ -59,7 +66,7 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').width * 0.6,
     },
     largeButton: {
-        backgroundColor: '#fff',
+        backgroundColor: '#3e4553',
         flex: 1,
         width: Dimensions.get('window').width * 0.4,
         height: "100%",
@@ -67,39 +74,26 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.15,
-        shadowRadius: 3.84,
     },
     largeButtonText: {
         fontSize: 20,
         fontWeight: 'bold',
         marginTop: 25,
+        color: '#fff',
     },
     button: {
-        backgroundColor: '#fff',
+        backgroundColor: '#3e4553',
         width: "100%",
         height: 60,
         borderRadius: 10,
         justifyContent: 'center',
         paddingHorizontal: 25,
         marginBottom: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.15,
-        shadowRadius: 3.84,
     },
     buttonText: {
         fontSize: 20,
         fontWeight: '500',
-        color: '#333'
+        color: 'white'
     },
 });
   

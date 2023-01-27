@@ -5,17 +5,19 @@ import Animated, { runOnJS, useAnimatedGestureHandler, useSharedValue, withSprin
 
 export default function DragComponent(props) {
 
-  const [position, setPosition] = useState({x: 30, y: 300})
+  const [position, setPosition] = useState({x: 30, y: 250})
   const [viewSize, setViewSize] = useState({width: 0, height: 0})
 
   const margin = 25
-  const screenWidth = Dimensions.get('window').width
-  const screenHeight = Dimensions.get('window').height
+  const screenWidth = Dimensions.get('screen').width
+  const screenHeight = Dimensions.get('screen').height
 
   const drag = useAnimatedGestureHandler({
     onStart: (e, ctx) => {
       ctx.x = position.x
       ctx.y = position.y
+
+      if (props.onDragStart) runOnJS(props.onDragStart)()
     },
     onActive: (e, ctx) => {
       let x = e.translationX + ctx.x
@@ -28,7 +30,7 @@ export default function DragComponent(props) {
     },
     onFinish: (e, ctx) => {
       // Snap position to grid
-      const gridSize = 25
+      const gridSize = 50
       let x = e.translationX + ctx.x
       let y = e.translationY + ctx.y
 

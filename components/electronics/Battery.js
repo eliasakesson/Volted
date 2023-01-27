@@ -19,11 +19,12 @@ export default function Battery() {
 
 const styles = StyleSheet.create({
     battery: {
-        width: 100,
+        width: 150,
         height: 50,
         borderRadius: 10,
         overflow: 'hidden',
         flexDirection: 'row',
+        zIndex: 5,
     },
     negative: {
         flex: 2,

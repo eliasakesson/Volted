@@ -9,7 +9,8 @@ export default function Resistor() {
             <View style={[styles.ring, {backgroundColor: "brown"}]}></View>
             <View style={[styles.ring, {backgroundColor: "black"}]}></View>
             <View style={[styles.ring, {backgroundColor: "red"}]}></View>
-            <View style={[styles.ring, {backgroundColor: "gold", marginLeft: 20}]}></View>
+            <View style={[styles.ring, {backgroundColor: "red"}]}></View>
+            <View style={[styles.ring, {backgroundColor: "gold", marginLeft: 30}]}></View>
         </View>
     </ElectricComponent>
   )
@@ -17,17 +18,18 @@ export default function Resistor() {
 
 const styles = StyleSheet.create({
     resistor: {
-        width: 100,
+        width: 150,
         height: 50,
         backgroundColor: 'lightgrey',
         borderRadius: 10,
         overflow: 'hidden',
         flexDirection: 'row',
         justifyContent: 'center',
+        zIndex: 5,
     },
     ring: {
         width: 5,
         height: "100%",
-        marginHorizontal: 5,
+        marginHorizontal: 8,
     }
 })

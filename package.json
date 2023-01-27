@@ -9,14 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@chakrahq/react-native-side-menu": "^1.3.4",
+    "@openspacelabs/react-native-zoomable-view": "^2.1.1",
+    "@react-navigation/bottom-tabs": "^6.5.3",
+    "@react-navigation/drawer": "^6.5.7",
+    "@react-navigation/native": "^6.1.2",
+    "@react-navigation/stack": "^6.3.11",
     "expo": "~47.0.12",
+    "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
     "react": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-drawer": "^2.5.1",
     "react-native-gesture-handler": "~2.8.0",
-    "react-native-reanimated": "~2.12.0",
-    "@react-navigation/native": "^6.1.2",
-    "@react-navigation/stack": "^6.3.11"
+    "react-native-reanimated": "~2.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

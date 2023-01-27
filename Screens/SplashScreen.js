@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import { Animated, Easing } from 'react-native';
 
 export default function SplashScreen({ navigation }) {
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const scaleAnim = useRef(new Animated.Value(0.5)).current;
+    const translateYAnim = useRef(new Animated.Value(Dimensions.get("screen").height / 2)).current;
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -22,15 +23,22 @@ export default function SplashScreen({ navigation }) {
             easing: Easing.out(Easing.cubic),
         }).start();
 
+        Animated.timing(translateYAnim, {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: true,
+            easing: Easing.out(Easing.cubic),
+        }).start();
+
         setTimeout(() => {
-        navigation.replace('Home');
+            navigation.replace('HomeTab');
         }, 2000)
     }, []);
 
     return (
         <View style={styles.container}>
-            <Animated.View style={{ opacity: fadeAnim, transform: [{scale: scaleAnim}] }}>
-                <Text style={styles.text}>Logo</Text>
+            <Animated.View style={{ opacity: fadeAnim, transform: [{translateY: translateYAnim}] }}>
+                <Image style={styles.logo} source={require('../assets/logo.png')} />
             </Animated.View>
         </View>
     );
@@ -39,14 +47,12 @@ export default function SplashScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    text: {
-        color: '#fff',
-        fontSize: 50,
-        fontWeight: 'bold',
+    logo: {
+        width: 100,
+        height: 100,
     }
 });
   
