@@ -1,13 +1,11 @@
 import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import ElectricComponent from './ElectricComponent'
+import { TouchableOpacity } from 'react-native'
 
 export default function CreateComponent(props) {
 
     const createComponent = () => {
       if (props.setComponents){
-        props.setComponents((prev) => [...prev, props.children])
+        props.setComponents((prev) => [...prev, {component: props.children, type: props.type || ""}])
       }
     }
 

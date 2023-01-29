@@ -1,26 +1,23 @@
 import React from 'react'
 import { View, StyleSheet, Text } from 'react-native'
-import ElectricComponent from '../ElectricComponent'
 
 export default function Battery() {
   return (
-    <ElectricComponent>
-        <View style={styles.battery}>
-            <View style={styles.negative}>
-                <Text style={{color: 'white'}}>-</Text>
-            </View>
-            <View style={styles.positive}>
-                <Text style={{color: 'white'}}>+</Text>
-            </View>
+    <View style={styles.battery}>
+        <View style={styles.negative}>
+            <Text style={{color: 'white'}}>-</Text>
         </View>
-    </ElectricComponent>
+        <View style={styles.positive}>
+            <Text style={{color: 'white'}}>+</Text>
+        </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
     battery: {
-        width: 150,
-        height: 50,
+        width: 100,
+        height: 40,
         borderRadius: 10,
         overflow: 'hidden',
         flexDirection: 'row',
