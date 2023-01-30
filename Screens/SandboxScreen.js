@@ -49,7 +49,7 @@ export default function SandboxScreen({ navigation }) {
   const libraryComponents = [
     {component: <Battery />, type: ""},
     {component: <Resistor />, type: ""},
-    {component: <Wire />, type: "non-drag"},
+    {component: <Wire />, libraryComponent: <Wire disabled />, type: "non-drag"},
   ]
 
   const menu = (
@@ -58,9 +58,7 @@ export default function SandboxScreen({ navigation }) {
       <View style={styles.library}>
         {libraryComponents.map((component, index) => {
           return (
-            <CreateComponent key={index} type={component.type} setComponents={setComponents}>
-              {component.component}
-            </CreateComponent>
+            <CreateComponent key={index} component={component.component} libraryComponent={component.libraryComponent} type={component.type} setComponents={setComponents} />
           )
         })}
       </View>

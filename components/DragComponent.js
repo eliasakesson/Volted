@@ -49,6 +49,10 @@ export default function DragComponent(props) {
     }
   })
 
+  if (props.disabled) return (
+    props.children
+  )
+
   return (
     <PanGestureHandler onGestureEvent={drag}>
       <Animated.View style={{left: position.x, top: position.y, position: "absolute"}} onLayout={(e) => {

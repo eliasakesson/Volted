@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     resistor: {
         width: 100,
         height: 40,
-        backgroundColor: 'lightgrey',
+        backgroundColor: '#383838',
         borderRadius: 10,
         overflow: 'hidden',
         flexDirection: 'row',
