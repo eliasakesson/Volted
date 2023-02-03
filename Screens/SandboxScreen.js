@@ -30,14 +30,33 @@ export default function SandboxScreen({ route, navigation }) {
 
   const onDragEnd = (position, index) => {
     setIsDragging(false)
+
+    let newComponents = [...components]
+
     // If component is dropped inside trashcan, remove it from the components array
     if (position.x > width - 200 && position.y > height - 200){
-      setComponents((prev) => {
-        const newComponents = [...prev]
-        newComponents.splice(index, 1)
-        return newComponents
+      newComponents.splice(index, 1)
+
+      newComponents.forEach((component, i) => {
+        if (component.connectedToIndex === index){
+          newComponents[i].connectedToIndex = null
+        }
       })
+
+      return setComponents(newComponents)
     }
+    
+    // Set the new position of the component
+    newComponents[index].x = position.x
+    newComponents[index].y = position.y
+
+    newComponents.forEach((component, i) => {
+      if (i !== index && component.x === position.x && component.y === position.y){
+        newComponents[i].connectedToIndex = index
+      }
+    })
+
+    setComponents(newComponents)
   }
 
   useEffect(() => {
