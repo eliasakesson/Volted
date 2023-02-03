@@ -1,0 +1,13 @@
+{
+    "header": "Enkel Lampa",
+    "description": "Enkel lampa med batteri, lampa och resistor.",
+    "info": "En lampa fungerar genom att ...",
+    "steps": [
+        "Sätt ut batteri, lampa och resistor.",
+        "Sätt ut tre kablar.",
+        "Koppla en kabel från batteriets pluspol till lampa.",
+        "Koppla en kabel från batteriets minuspol till resistorn.",
+        "Koppla en kabel från resistorn till lampan."
+    ],
+    "image": "https://dr282zn36sxxg.cloudfront.net/datastreams/f-d%3A7b26a6b696f9013a46245347ef48099d2f59b79597e869790be74634%2BIMAGE_TINY%2BIMAGE_TINY.1"
+}

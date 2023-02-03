@@ -7,9 +7,11 @@ import SplashScreen from './Screens/SplashScreen';
 import SandboxScreen from './Screens/SandboxScreen';
 import { StatusBar } from 'expo-status-bar';
 
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import TutorialsScreen from './Screens/TutorialsScreen';
 import { colors } from './colors';
+import AwardsScreen from './Screens/AwardsScreen';
+import TutorialScreen from './Screens/TutorialScreen';
 
 const Stack = createNativeStackNavigator();
 const HomeTab = createBottomTabNavigator();
@@ -22,8 +24,8 @@ function HomeTabs() {
         iconName = 'home';
       } else if (route.name === 'Tutorials') {
         iconName = 'book';
-      } else if (route.name === 'Profile') {
-        iconName = 'user';
+      } else if (route.name === 'Awards') {
+        return <Ionicons name="md-medal-outline" size={24} color={focused ? colors.primary : colors.text} />
       }
 
       
@@ -31,7 +33,7 @@ function HomeTabs() {
     }})}>
       <HomeTab.Screen name="Home" component={HomeScreen} />
       <HomeTab.Screen name="Tutorials" component={TutorialsScreen} />
-      <HomeTab.Screen name="Profile" component={TutorialsScreen} />
+      <HomeTab.Screen name="Awards" component={AwardsScreen} />
     </HomeTab.Navigator>
   );
 }
@@ -44,6 +46,7 @@ export default function App() {
         <Stack.Screen name="Splash" component={SplashScreen} options={{headerShown: false, animation: "fade"}} />
         <Stack.Screen name="HomeTab" component={HomeTabs} options={{headerShown: false, animation: "fade_from_bottom"}} />
         <Stack.Screen name="Sandbox" component={SandboxScreen} options={{title: "Sandlådsläge", gestureEnabled: false, orientation: "all"}} />
+        <Stack.Screen name="Tutorial" component={TutorialScreen} options={{title: "Lektion"}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

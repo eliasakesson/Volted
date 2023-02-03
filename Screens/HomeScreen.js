@@ -1,9 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Dimensions, StyleSheet, Text, TouchableOpacity, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { colors } from '../colors';
+import { Stringify } from '../Helpers';
 
 export default function HomeScreen({ navigation }) {
+
+    const [tutorials, setTutorials] = useState([])
+    
+    useEffect(() => {
+        const context = require.context('../tutorials', true, /\.json$/);
+        const keys = context.keys();
+        const values = keys.map(context);
+        setTutorials(values)
+    }, [])
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
@@ -24,36 +34,20 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
             <Text style={styles.header}>Populära Genomgångar</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.popular}>
-                <TouchableOpacity style={styles.popularItem}>
-                    <View>
-                        <Text style={styles.popularItemHeader}>Enkel Lampa</Text>
-                        <Text style={styles.popularItemText}>Lär dig om kretsar och hur de fungerar</Text>
-                    </View>
-                    <View style={styles.likes}>
-                        <Text style={styles.likeText}>25</Text>
-                        <Feather name="thumbs-up" size={20} color={colors.header} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.popularItem}>
-                    <View>
-                        <Text style={styles.popularItemHeader}>Elmotor</Text>
-                        <Text style={styles.popularItemText}>Lär dig om kretsar och hur de fungerar</Text>
-                    </View>
-                    <View style={styles.likes}>
-                        <Text style={styles.likeText}>8</Text>
-                        <Feather name="thumbs-up" size={20} color={colors.header} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.popularItem}>
-                    <View>
-                        <Text style={styles.popularItemHeader}>Jetmotor</Text>
-                        <Text style={styles.popularItemText}>Lär dig om kretsar och hur de fungerar</Text>
-                    </View>
-                    <View style={styles.likes}>
-                        <Text style={styles.likeText}>15</Text>
-                        <Feather name="thumbs-up" size={20} color={colors.header} />
-                    </View>
-                </TouchableOpacity>
+                {tutorials.map((tutorial, index) => {
+                    return (
+                        <TouchableOpacity key={index} style={styles.popularItem} onPress={() => navigation.navigate("Tutorial", { data: tutorial })}>
+                            <View>
+                                <Text style={styles.popularItemHeader}>{Stringify(tutorial.header)}</Text>
+                                <Text style={styles.popularItemText}>{Stringify(tutorial.description)}</Text>
+                            </View>
+                            <View style={styles.likes}>
+                                <Text style={styles.likeText}>15</Text>
+                                <Feather name="thumbs-up" size={20} color={colors.header} />
+                            </View>
+                        </TouchableOpacity>
+                    )
+                })}
             </ScrollView>
             <Text style={styles.header}>Senaste</Text>
             <TouchableOpacity style={styles.button}>

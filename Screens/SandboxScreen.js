@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Button, Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CreateComponent from '../components/CreateComponent';
 import DragComponent from '../components/DragComponent';
@@ -9,14 +9,22 @@ import SideMenu from '@chakrahq/react-native-side-menu';
 import { colors } from '../colors';
 import { useWindowDimensions } from 'react-native';
 import Wire from '../components/electronics/Wire';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { Stringify } from '../Helpers';
 
-export default function SandboxScreen({ navigation }) {
+export default function SandboxScreen({ route, navigation }) {
+
+  const { data } = route?.params || {};
 
   const [isDragging, setIsDragging] = useState(false)
   const [components, setComponents] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const [tooltipOpen, setTooltipOpen] = useState(true)
+
+  const [currentStep, setCurrentStep] = useState(0)
+
+  const snapPoints = useMemo(() => ['11%', '50%'], []);
 
   const { width, height } = useWindowDimensions();
 
@@ -48,7 +56,9 @@ export default function SandboxScreen({ navigation }) {
 
   const libraryComponents = [
     {component: <Battery />, type: ""},
-    {component: <Resistor />, type: ""},
+    {component: <Resistor strength={"SVAG"} />, type: ""},
+    {component: <Resistor strength={"MEDEL"} />, type: ""},
+    {component: <Resistor strength={"SVÅR"} />, type: ""},
     {component: <Wire />, libraryComponent: <Wire disabled />, type: "non-drag"},
   ]
 
@@ -92,11 +102,25 @@ export default function SandboxScreen({ navigation }) {
         <Text style={styles.tooltipText} >Klicka här för att lägga till komponenter</Text>
         <Button color="#fff" title='Okej' onPress={() => setTooltipOpen(false)} />
       </View>
+      {data &&
+      <BottomSheet snapPoints={snapPoints} backgroundStyle={styles.tutorialBackground}>
+        <View style={styles.tutorial}>
+          <Text style={styles.tutorialHeader}>{Stringify(data.header)}</Text>
+          <Text style={styles.tutorialText}>{Stringify(data.steps[currentStep])}</Text>
+          <View style={styles.tutorialSteps}>
+            <TouchableOpacity onPress={() => setCurrentStep(step => Math.max(step - 1, 0))} style={styles.tutorialButton}><AntDesign name="caretleft" size={24} color="white" /></TouchableOpacity>
+            <Text style={styles.tutorialStep}>Steg {currentStep + 1}</Text>
+            <TouchableOpacity onPress={() => setCurrentStep(step => Math.min(step + 1, data.steps.length - 1))} style={styles.tutorialButton}><AntDesign name="caretright" size={24} color="white" /></TouchableOpacity>
+          </View>
+        </View>
+      </BottomSheet>
+      }
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  // Main
   container: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -104,12 +128,6 @@ const styles = StyleSheet.create({
   backgroundImage: {
     position: "absolute", 
     margin: 25,
-  },
-  library: {
-    height: 200,
-    top: 0,
-    left: 0,
-    right: 0,
   },
   trashcan: {
     position: 'absolute',
@@ -122,6 +140,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  // Menu
   menu: {
     flex: 1,
     width: window.width,
@@ -135,6 +155,57 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: colors.header,
   },
+  library: {
+    height: 200,
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+
+  // Tutorial
+  tutorial: {
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    height: "100%"
+  },
+  tutorialBackground: {
+    backgroundColor: colors.card,
+  },
+  tutorialHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: colors.header,
+  },
+  tutorialText: {
+    fontSize: 16,
+    marginBottom: 20,
+    color: colors.text,
+  },
+  tutorialSteps: {
+    position: 'absolute',
+    bottom: 50,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tutorialStep: {
+    fontSize: 16,
+    color: colors.text,
+    marginHorizontal: 20,
+  },
+  tutorialButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Tooltip
   tooltip: {
     position: 'absolute',
     top: 30,
