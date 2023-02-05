@@ -53,11 +53,16 @@ export default function SandboxScreen({ route, navigation }) {
     newComponents.forEach((component, i) => {
       if (i !== index && component.x === position.x && component.y === position.y){
         newComponents[i].connectedToIndex = index
+        newComponents[index].connectedToIndex = i
       }
     })
 
     setComponents(newComponents)
   }
+
+  useEffect(() => {
+    if (data) navigation.setOptions({ title: data.title })
+  }, [])
 
   useEffect(() => {
     navigation.setOptions({
@@ -104,7 +109,7 @@ export default function SandboxScreen({ route, navigation }) {
           </TouchableOpacity>
           {components.map((component, index) => {
             if (component.type === "non-drag"){
-              return component.component
+              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => onDragEnd(e, index)})
             }
 
             return (
@@ -124,12 +129,22 @@ export default function SandboxScreen({ route, navigation }) {
       {data &&
       <BottomSheet snapPoints={snapPoints} backgroundStyle={styles.tutorialBackground}>
         <View style={styles.tutorial}>
-          <Text style={styles.tutorialHeader}>{Stringify(data.header)}</Text>
+          <Text style={styles.tutorialHeader}>{Stringify(data.title)}</Text>
           <Text style={styles.tutorialText}>{Stringify(data.steps[currentStep])}</Text>
           <View style={styles.tutorialSteps}>
-            <TouchableOpacity onPress={() => setCurrentStep(step => Math.max(step - 1, 0))} style={styles.tutorialButton}><AntDesign name="caretleft" size={24} color="white" /></TouchableOpacity>
-            <Text style={styles.tutorialStep}>Steg {currentStep + 1}</Text>
-            <TouchableOpacity onPress={() => setCurrentStep(step => Math.min(step + 1, data.steps.length - 1))} style={styles.tutorialButton}><AntDesign name="caretright" size={24} color="white" /></TouchableOpacity>
+            {currentStep > 0 &&
+              <TouchableOpacity onPress={() => setCurrentStep(step => Math.max(step - 1, 0))} style={[styles.tutorialButton, {marginLeft: 0, flex: 0, marginRight: 25}]}>
+                <AntDesign name="caretleft" size={18} color="white" />
+              </TouchableOpacity>
+            }
+            {currentStep < data.steps.length - 1 ?
+              <TouchableOpacity onPress={() => setCurrentStep(step => Math.min(step + 1, data.steps.length - 1))} style={styles.tutorialButton}>
+                <Text style={styles.tutorialButtonText}>Nästa Steg</Text>
+              </TouchableOpacity> :
+              <TouchableOpacity onPress={() => navigation.navigate("Success")} style={styles.tutorialButton}>
+                <Text style={styles.tutorialButtonText}>Testa koppling</Text>
+              </TouchableOpacity>
+            }
           </View>
         </View>
       </BottomSheet>
@@ -202,26 +217,30 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   tutorialSteps: {
-    position: 'absolute',
-    bottom: 50,
-    left: 0,
-    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    marginTop: "auto",
+    paddingBottom: 25,
   },
   tutorialStep: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: colors.text,
-    marginHorizontal: 20,
+    marginLeft: 10,
   },
   tutorialButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
+    borderRadius: 10,
     backgroundColor: colors.primary,
-    justifyContent: 'center',
+    padding: 16,
     alignItems: 'center',
+    marginLeft: "auto",
+    flex: 1,
+  },
+  tutorialButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 
   // Tooltip

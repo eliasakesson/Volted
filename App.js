@@ -5,13 +5,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './Screens/HomeScreen';
 import SplashScreen from './Screens/SplashScreen';
 import SandboxScreen from './Screens/SandboxScreen';
-import { StatusBar } from 'expo-status-bar';
-
-import { AntDesign, Ionicons } from '@expo/vector-icons';
 import TutorialsScreen from './Screens/TutorialsScreen';
-import { colors } from './colors';
 import AwardsScreen from './Screens/AwardsScreen';
 import TutorialScreen from './Screens/TutorialScreen';
+import SuccessScreen from './Screens/SuccessScreen';
+
+import { StatusBar } from 'expo-status-bar';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { colors } from './colors';
 
 const Stack = createNativeStackNavigator();
 const HomeTab = createBottomTabNavigator();
@@ -47,6 +48,7 @@ export default function App() {
         <Stack.Screen name="HomeTab" component={HomeTabs} options={{headerShown: false, animation: "fade_from_bottom"}} />
         <Stack.Screen name="Sandbox" component={SandboxScreen} options={{title: "Sandlådsläge", gestureEnabled: false, orientation: "all"}} />
         <Stack.Screen name="Tutorial" component={TutorialScreen} options={{title: "Lektion"}} />
+        <Stack.Screen name="Success" component={SuccessScreen} options={{title: "Grattis!", gestureEnabled: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

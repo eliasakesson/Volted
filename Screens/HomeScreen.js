@@ -38,7 +38,7 @@ export default function HomeScreen({ navigation }) {
                     return (
                         <TouchableOpacity key={index} style={styles.popularItem} onPress={() => navigation.navigate("Tutorial", { data: tutorial })}>
                             <View>
-                                <Text style={styles.popularItemHeader}>{Stringify(tutorial.header)}</Text>
+                                <Text style={styles.popularItemHeader}>{Stringify(tutorial.title)}</Text>
                                 <Text style={styles.popularItemText}>{Stringify(tutorial.description)}</Text>
                             </View>
                             <View style={styles.likes}>
@@ -65,33 +65,6 @@ export default function HomeScreen({ navigation }) {
             <Button onPress={() => navigation.replace("Splash")} title="Show splashscreen (Temporary)"></Button>
         </ScrollView>
     )
-
-    return (
-        <ScrollView style={oldStyles.container}>
-            <Text style={oldStyles.welcomeText}>Välkommen tillbaka <Text style={{fontWeight: 'bold'}}>Elias</Text></Text>
-            <View style={oldStyles.largeButtons}>
-                <TouchableWithoutFeedback onPress={() => navigation.navigate("Sandbox")} style={oldStyles.largeButton}>
-                    <AntDesign name="flag" size={50} color={colors.primary} />
-                    <Text style={oldStyles.largeButtonText}>Sandlådsläge</Text>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback style={oldStyles.largeButton}>
-                    <AntDesign name="search1" size={50} color={colors.primary} />
-                    <Text style={oldStyles.largeButtonText}>Utforska</Text>
-                </TouchableWithoutFeedback>
-            </View>
-            <Text style={oldStyles.headerText}>Senaste</Text>
-            <TouchableWithoutFeedback style={oldStyles.button}>
-                <Text style={oldStyles.buttonText}>Projekt 1</Text>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback style={oldStyles.button}>
-                <Text style={oldStyles.buttonText}>Projekt 2</Text>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback style={oldStyles.button}>
-                <Text style={oldStyles.buttonText}>Projekt 3</Text>
-            </TouchableWithoutFeedback>
-            <Button onPress={() => navigation.replace("Splash")} title="Show splashscreen (Temporary)"></Button>
-        </ScrollView>
-    );
 }
 
 const styles = StyleSheet.create({
@@ -204,73 +177,3 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
 });
-
-const oldStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingVertical: 100,
-        paddingHorizontal: 25,
-        backgroundColor: colors.bg,
-    },
-    background: {
-        position: 'absolute',
-        top: 100,
-        left: -25,
-        width: Dimensions.get('window').width,
-        height: 2000,
-        borderRadius: 15,
-    },
-    welcomeText: {
-        fontSize: 25,
-        marginBottom: 25,
-        color: colors.text,
-    },
-    headerText: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        marginTop: 25,
-        marginBottom: 15,
-        color: colors.header,
-    },
-    largeButtons: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: Dimensions.get('window').width * 0.6,
-    },
-    largeButton: {
-        backgroundColor: colors.card,
-        flex: 1,
-        width: Dimensions.get('window').width * 0.4,
-        height: "100%",
-        borderRadius: 10,
-        marginHorizontal: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: colors.border,
-        borderWidth: 1,
-    },
-    largeButtonText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginTop: 25,
-        color: colors.text,
-    },
-    button: {
-        backgroundColor: colors.card,
-        width: "100%",
-        height: 60,
-        borderRadius: 10,
-        justifyContent: 'center',
-        paddingHorizontal: 25,
-        marginBottom: 10,
-        borderColor: colors.border,
-        borderWidth: 1,
-    },
-    buttonText: {
-        fontSize: 20,
-        fontWeight: '500',
-        color: colors.text
-    },
-});
-  

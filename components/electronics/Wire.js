@@ -13,6 +13,7 @@ export default function Wire(props) {
 
     const onDragEnd1 = ({x, y}) => {
         setLine({...line, x1: x, y1: y + 20})
+        props.onDragEnd({x, y}) 
     }
 
     const onDrag2 = ({x, y}) => {
@@ -21,6 +22,7 @@ export default function Wire(props) {
 
     const onDragEnd2 = ({x, y}) => {
         setLine({...line, x2: x, y2: y + 20})
+        props.onDragEnd({x, y})
     }
 
     if (props.disabled) return (
@@ -34,10 +36,10 @@ export default function Wire(props) {
   return (
     <>
         <Svg style={styles.svg}><Line style={styles.line} {...line}></Line></Svg>
-        <DragComponent disabled={props.disabled} onDrag={onDrag1} onDragEnd={onDragEnd1}>
+        <DragComponent disabled={props.disabled} onDragStart={() => props.onDragStart()} onDrag={onDrag1} onDragEnd={onDragEnd1}>
             <View style={styles.dragger}></View>
         </DragComponent>
-        <DragComponent disabled={props.disabled} onDrag={onDrag2} onDragEnd={onDragEnd2} startX={150} >
+        <DragComponent disabled={props.disabled} onDragStart={() => props.onDragStart()} onDrag={onDrag2} onDragEnd={onDragEnd2} startX={150} >
             <View style={styles.dragger}></View>
         </DragComponent>
     </>
