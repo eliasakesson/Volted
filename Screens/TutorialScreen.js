@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
-import { Stringify } from '../Helpers'
 import { colors } from '../colors'
 import { AntDesign } from '@expo/vector-icons';
 
@@ -29,8 +28,8 @@ export default function TutorialScreen({ route, navigation }) {
             {data.tutorial[currentStep].image && <Image style={styles.image} source={{uri: data.tutorial[currentStep].image}} />}
         </View>
         <View style={styles.bottom}>
-            <Text style={styles.title}>{Stringify(data.tutorial[currentStep].title)}</Text>
-            <Text style={styles.description}>{Stringify(data.tutorial[currentStep].text)}</Text>
+            <Text style={styles.title}>{data.tutorial[currentStep].title}</Text>
+            <Text style={styles.description}>{data.tutorial[currentStep].text}</Text>
             <View style={styles.buttons}>   
                 {currentStep > 0 &&   
                     <TouchableOpacity style={[styles.button, styles.squareButton]} onPress={() => setCurrentStep(currentStep - 1)}>

@@ -3,39 +3,21 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedbac
 import { colors } from '../colors'
 import { Animated } from 'react-native';
 
-export default function TutorialsScreen() {
+export default function TutorialsScreen({ navigation }) {
 
   const [selectedTab, setSelectedTab] = useState(0);
   const tabProgress = useRef(new Animated.Value(0)).current;
-
-  const tutorials = [
-    {
-      title: "Enkel lampa",
-      difficulty: "Lätt",
-    },
-    {
-      title: "Lampa med dimmer",
-      difficulty: "Lätt",
-    },
-    {
-      title: "Lampa med färg",
-      difficulty: "Lätt",
-    },
-    {
-      title: "Lampa med färg och dimmer",
-      difficulty: "Medelsvår",
-    },
-    {
-      title: "Elmotor",
-      difficulty: "Medelsvår",
-    },
-    {
-      title: "Elmotor med dimmer",
-      difficulty: "Medelsvår",
-    },
-  ]
+  const [tutorials, setTutorials] = useState([])
 
   const difficulties = ["Lätt", "Medelsvår", "Svår"]
+
+    
+  useEffect(() => {
+    const context = require.context('../tutorials', true, /\.json$/);
+    const keys = context.keys();
+    const values = keys.map(context);
+    setTutorials(values)
+  }, [])
 
   useEffect(() => {
     Animated.timing(tabProgress, {
@@ -69,7 +51,7 @@ export default function TutorialsScreen() {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {tutorials.filter(({difficulty}) => difficulty == difficulties[selectedTab]).map((tutorial, index) => {
           return (
-            <TouchableOpacity key={index} style={styles.button}>
+            <TouchableOpacity onPress={() => navigation.navigate("Tutorial", {data: tutorial})} key={index} style={styles.button}>
               <Text style={styles.buttonText}>{tutorial.title}</Text>
               <Text>{tutorial.difficulty}</Text>
             </TouchableOpacity>

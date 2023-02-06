@@ -10,7 +10,6 @@ import { colors } from '../colors';
 import { useWindowDimensions } from 'react-native';
 import Wire from '../components/electronics/Wire';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { Stringify } from '../Helpers';
 
 export default function SandboxScreen({ route, navigation }) {
 
@@ -129,8 +128,8 @@ export default function SandboxScreen({ route, navigation }) {
       {data &&
       <BottomSheet snapPoints={snapPoints} backgroundStyle={styles.tutorialBackground}>
         <View style={styles.tutorial}>
-          <Text style={styles.tutorialHeader}>{Stringify(data.title)}</Text>
-          <Text style={styles.tutorialText}>{Stringify(data.steps[currentStep])}</Text>
+          <Text style={styles.tutorialHeader}>{data.title}</Text>
+          <Text style={styles.tutorialText}>{data.steps[currentStep]}</Text>
           <View style={styles.tutorialSteps}>
             {currentStep > 0 &&
               <TouchableOpacity onPress={() => setCurrentStep(step => Math.max(step - 1, 0))} style={[styles.tutorialButton, {marginLeft: 0, flex: 0, marginRight: 25}]}>
@@ -141,7 +140,7 @@ export default function SandboxScreen({ route, navigation }) {
               <TouchableOpacity onPress={() => setCurrentStep(step => Math.min(step + 1, data.steps.length - 1))} style={styles.tutorialButton}>
                 <Text style={styles.tutorialButtonText}>Nästa Steg</Text>
               </TouchableOpacity> :
-              <TouchableOpacity onPress={() => navigation.navigate("Success")} style={styles.tutorialButton}>
+              <TouchableOpacity onPress={() => navigation.navigate("Success", { data })} style={styles.tutorialButton}>
                 <Text style={styles.tutorialButtonText}>Testa koppling</Text>
               </TouchableOpacity>
             }

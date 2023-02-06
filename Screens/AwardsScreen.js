@@ -1,11 +1,13 @@
 import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { colors } from '../colors'
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { ScrollView } from 'react-native';
+import { AsyncStorage } from '@react-native-community/async-storage';
 
 export default function AwardsScreen() {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
         <View style={styles.medals}>
             <View style={styles.medalColumn}>
                 <FontAwesome5 name="medal" size={60} color="silver" />
@@ -23,7 +25,7 @@ export default function AwardsScreen() {
         <View>
             <Text style={styles.header}>Senaste medaljer</Text>
         </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
         marginBottom: 25,
     },
     medalColumn: {
-        flexDirection: 'column-reverse',
+        flexDirection: 'column',
         alignItems: 'center',
         flex: 1,
     },
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
         color: colors.header,
         fontSize: 25,
         fontWeight: 'bold',
-        marginBottom: 25,
+        marginVertical: 25,
     },
     header: {
         fontSize: 20,

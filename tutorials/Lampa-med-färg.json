@@ -1,8 +1,8 @@
 {
-    "title": "Enkel Lampa",
+    "title": "Lampa Med Färg",
     "description": "Enkel lampa med batteri, lampa och resistor.",
-    "popular": true,
-    "difficulty": "Lätt",
+    "popular": false,
+    "difficulty": "Medelsvår",
     "tutorial": [
         {
             "title": "Enkel Lampa",

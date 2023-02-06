@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Dimensions, StyleSheet, Text, TouchableOpacity, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { colors } from '../colors';
-import { Stringify } from '../Helpers';
 
 export default function HomeScreen({ navigation }) {
 
@@ -17,14 +16,6 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
-            <View style={styles.between}>
-                <TouchableOpacity style={[styles.avatar, {backgroundColor: "none"}]}>
-                    <AntDesign name="bars" size={30} color={colors.header} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.avatar}>
-                    <AntDesign name="user" size={30} color="white" />
-                </TouchableOpacity>
-            </View>
             <TouchableOpacity onPress={() => navigation.navigate("Sandbox")} style={styles.headerButton}>
                 <View>
                     <Text style={styles.headerButtonHeader}>Sandlådsläge</Text>
@@ -35,11 +26,13 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.header}>Populära Genomgångar</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.popular}>
                 {tutorials.map((tutorial, index) => {
+                    if (!tutorial.popular) return null
+
                     return (
                         <TouchableOpacity key={index} style={styles.popularItem} onPress={() => navigation.navigate("Tutorial", { data: tutorial })}>
                             <View>
-                                <Text style={styles.popularItemHeader}>{Stringify(tutorial.title)}</Text>
-                                <Text style={styles.popularItemText}>{Stringify(tutorial.description)}</Text>
+                                <Text style={styles.popularItemHeader}>{tutorial.title}</Text>
+                                <Text style={styles.popularItemText}>{tutorial.description}</Text>
                             </View>
                             <View style={styles.likes}>
                                 <Text style={styles.likeText}>15</Text>
@@ -62,7 +55,6 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.buttonText}>Projekt 1</Text>
                 <Text>3 dagar sedan</Text>
             </TouchableOpacity>
-            <Button onPress={() => navigation.replace("Splash")} title="Show splashscreen (Temporary)"></Button>
         </ScrollView>
     )
 }
@@ -73,10 +65,6 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         paddingHorizontal: 20,
         backgroundColor: colors.bg,
-    },
-    between: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
     },
     row: {
         flexDirection: 'row',
@@ -94,7 +82,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - 40,
         height: (Dimensions.get('window').width - 40) * 0.55,
         borderRadius: 25,
-        marginTop: 25,
+        marginTop: 50,
         paddingHorizontal: 25,
         alignItems: 'center',
         flexDirection: 'row',

@@ -1,6 +1,8 @@
 {
     "title": "Elmotor",
     "description": "Enkel elmotor som kan användas för att skapa en robot eller en bil.",
+    "popular": true,
+    "difficulty": "Svår",
     "tutorial": [
         {
             "title": "Elmotor",
