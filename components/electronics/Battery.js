@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
+import { Sender } from 'mpmc'
 
 export default function Battery() {
+
+    useEffect(() => {
+        Sender.send({'battery': 1})
+    }, [])
+
   return (
     <View style={styles.battery}>
         <View style={styles.negative}>

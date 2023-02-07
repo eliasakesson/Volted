@@ -13,6 +13,7 @@ import SuccessScreen from './Screens/SuccessScreen';
 import { StatusBar } from 'expo-status-bar';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { colors } from './colors';
+import ProjectsScreen from './Screens/ProjectsScreen';
 
 const Stack = createNativeStackNavigator();
 const HomeTab = createBottomTabNavigator();
@@ -25,6 +26,8 @@ function HomeTabs() {
         iconName = 'home';
       } else if (route.name === 'Tutorials') {
         iconName = 'book';
+      } else if (route.name === "Projects") {
+        iconName = 'folder1';
       } else if (route.name === 'Awards') {
         return <Ionicons name="md-medal-outline" size={24} color={focused ? colors.primary : colors.text} />
       }
@@ -34,6 +37,7 @@ function HomeTabs() {
     }})}>
       <HomeTab.Screen name="Home" component={HomeScreen} />
       <HomeTab.Screen name="Tutorials" component={TutorialsScreen} />
+      <HomeTab.Screen name="Projects" component={ProjectsScreen} />
       <HomeTab.Screen name="Awards" component={AwardsScreen} />
     </HomeTab.Navigator>
   );

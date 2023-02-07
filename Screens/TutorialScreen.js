@@ -10,17 +10,9 @@ export default function TutorialScreen({ route, navigation }) {
 
     const notLastStep = currentStep < data.tutorial.length - 1
 
-    const nextStep = () => {
-        if (notLastStep) {
-            setCurrentStep(currentStep + 1)
-        } else {
-            navigation.navigate("Sandbox", { data })
-        }
-    }
-
     useEffect(() => {
         navigation.setOptions({ title: data.title })
-    }, [])
+    }, [navigation])
 
   return (
     <View style={styles.container}>

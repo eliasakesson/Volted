@@ -56,14 +56,14 @@ export default function SandboxScreen({ route, navigation }) {
       }
     })
 
+    console.log(newComponents)
+
     setComponents(newComponents)
   }
 
   useEffect(() => {
     if (data) navigation.setOptions({ title: data.title })
-  }, [])
 
-  useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity onPress={() => setSidebarOpen(true)}>
