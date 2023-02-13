@@ -32,13 +32,16 @@ export default function SandboxScreen({ route, navigation }) {
 
     let newComponents = [...components]
 
+    const centerX = position.x + (position.x - position.x2)
+    const centerY = position.y + (position.y - position.y2)
+
     // If component is dropped inside trashcan, remove it from the components array
-    if (position.x > width - 200 && position.y > height - 200){
+    if (centerX > width - 200 && centerY > height - 200){
       newComponents.splice(index, 1)
 
       newComponents.forEach((component, i) => {
-        if (component.connectedToIndex === index){
-          newComponents[i].connectedToIndex = null
+        if (component.receiverIndex === index){
+          newComponents[i].receiverIndex = null
         }
       })
 
@@ -48,11 +51,27 @@ export default function SandboxScreen({ route, navigation }) {
     // Set the new position of the component
     newComponents[index].x = position.x
     newComponents[index].y = position.y
+    newComponents[index].x2 = position.x2
+    newComponents[index].y2 = position.y2
 
+    // Reset the receiverIndex of the component if it was connected to another component
+    if (newComponents[index].receiverIndex1){
+      newComponents[newComponents[index].receiverIndex1].receiverIndex2 = null
+    } else if (newComponents[index].receiverIndex2){
+      newComponents[newComponents[index].receiverIndex2].receiverIndex1 = null
+    }
+
+    newComponents[index].receiverIndex1 = null
+    newComponents[index].receiverIndex2 = null
+
+    // Check if the component is dropped on top of another component and connect them if so
     newComponents.forEach((component, i) => {
-      if (i !== index && component.x === position.x && component.y === position.y){
-        newComponents[i].connectedToIndex = index
-        newComponents[index].connectedToIndex = i
+      if (i !== index && component.x === position.x && component.y === position.y && component.type !== "wire"){
+        newComponents[index].receiverIndex1 = i
+        newComponents[i].receiverIndex2 = index
+      } else if (i !== index && component.x2 === position.x && component.y2 === position.y && component.type === "wire"){
+        newComponents[index].receiverIndex2 = i
+        newComponents[i].receiverIndex1 = index
       }
     })
 
@@ -82,7 +101,7 @@ export default function SandboxScreen({ route, navigation }) {
     {component: <Resistor strength={"SVAG"} />, type: ""},
     {component: <Resistor strength={"MEDEL"} />, type: ""},
     {component: <Resistor strength={"SVÅR"} />, type: ""},
-    {component: <Wire />, libraryComponent: <Wire disabled />, type: "non-drag"},
+    {component: <Wire />, libraryComponent: <Wire disabled />, type: "wire"},
   ]
 
   const menu = (
@@ -103,17 +122,17 @@ export default function SandboxScreen({ route, navigation }) {
       <SideMenu menu={menu} isOpen={sidebarOpen} onChange={(open) => setSidebarOpen(open)} menuPosition="right">
         <View style={styles.container}>
           <ImageBackground resizeMode='repeat' source={require('../assets/dots.png')} style={[styles.backgroundImage, {width: width - 50, height: height - (height > width ? 150 : 75)}]} />
-          <TouchableOpacity style={[styles.trashcan, {opacity: isDragging ? 1 : 0}]}>
+          <TouchableOpacity style={[styles.trashcan, {opacity: isDragging ? 1 : 0, bottom: data ? 100 : 30}]}>
             <Ionicons name="trash-outline" size={40} color={colors.bg}  />
           </TouchableOpacity>
           {components.map((component, index) => {
-            if (component.type === "non-drag"){
-              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => onDragEnd(e, index)})
+            if (component.type === "wire"){
+              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => onDragEnd(e, index), sender1: component.sender1, sender2: component.sender2, receiver1: components[component.receiverIndex]?.receiver1, receiver2: components[component.receiverIndex]?.receiver2, startY : 75 + index * 50})
             }
 
             return (
-              <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => onDragEnd(e, index)}>
-                {component.component}
+              <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => onDragEnd(e, index)} startY={75 + index * 50}>
+                {React.cloneElement(component.component, {sender1: component.sender1, sender2: component.sender2, receiver1: components[component.receiverIndex]?.receiver1, receiver2: components[component.receiverIndex]?.receiver2})}
               </DragComponent>
             )
           })}

@@ -1,9 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import DragComponent from '../DragComponent'
 import { Svg, Line } from 'react-native-svg'
 
 export default function Wire(props) {
+
+    useEffect(() => {
+        props.receiver1?.forEach((message) => {
+            console.log("Wire: ", message)
+            props.sender2?.send(message)
+        })
+
+        props.receiver2?.forEach((message) => {
+            console.log("Wire: ", message)
+            props.sender1?.send(message)
+        })
+    }, [props.receiver1, props.receiver2])
 
     const [line, setLine] = useState({x1: 75, y1: 95, x2: 150, y2: 95})
 
@@ -36,10 +48,10 @@ export default function Wire(props) {
   return (
     <>
         <Svg style={styles.svg}><Line style={styles.line} {...line}></Line></Svg>
-        <DragComponent disabled={props.disabled} onDragStart={() => props.onDragStart()} onDrag={onDrag1} onDragEnd={onDragEnd1}>
+        <DragComponent disabled={props.disabled} onDragStart={() => props.onDragStart()} onDrag={onDrag1} onDragEnd={onDragEnd1} startY={props.startY}>
             <View style={styles.dragger}></View>
         </DragComponent>
-        <DragComponent disabled={props.disabled} onDragStart={() => props.onDragStart()} onDrag={onDrag2} onDragEnd={onDragEnd2} startX={150} >
+        <DragComponent disabled={props.disabled} onDragStart={() => props.onDragStart()} onDrag={onDrag2} onDragEnd={onDragEnd2} startX={175} startY={props.startY} >
             <View style={styles.dragger}></View>
         </DragComponent>
     </>

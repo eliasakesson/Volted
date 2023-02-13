@@ -1,12 +1,21 @@
 import React, { useEffect } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
-import { Sender } from 'mpmc'
 
-export default function Battery() {
+export default function Battery(props) {
 
     useEffect(() => {
-        Sender.send({'battery': 1})
-    }, [])
+        props.receiver1?.forEach((message) => {
+            console.log("Battery: ", message)
+        })
+    }, [props.receiver1])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            props.sender2?.send(1)
+        }, 100)
+
+        return () => clearInterval(interval)
+    }, [props.sender2])
 
   return (
     <View style={styles.battery}>

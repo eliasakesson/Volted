@@ -5,7 +5,7 @@ import Animated, { runOnJS, useAnimatedGestureHandler, useSharedValue, withSprin
 
 export default function DragComponent(props) {
 
-  const [position, setPosition] = useState({x: props.startX || 75, y: 75})
+  const [position, setPosition] = useState({x: props.startX || 75, y: props.startY || 75})
   const [viewSize, setViewSize] = useState({width: 0, height: 0})
 
   const margin = 25
@@ -29,7 +29,7 @@ export default function DragComponent(props) {
 
       runOnJS(setPosition)({x, y})
 
-      if (props.onDrag) runOnJS(props.onDrag)({x, y})
+      if (props.onDrag) runOnJS(props.onDrag)({x, y, x2: x + viewSize.width, y2: y})
     },
     onFinish: (e, ctx) => {
       // Snap position to grid
@@ -45,9 +45,14 @@ export default function DragComponent(props) {
 
       runOnJS(setPosition)({x, y})
       
-      if (props.onDragEnd) runOnJS(props.onDragEnd)({x, y})
+      if (props.onDragEnd) runOnJS(props.onDragEnd)({x, y, x2: x + viewSize.width, y2: y})
     }
   })
+
+  const onLayout = (e) => {
+    setViewSize({width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height})
+    props.onDragEnd({x: position.x, y: position.y, x2: position.x + e.nativeEvent.layout.width, y2: position.y})
+  }
 
   if (props.disabled) return (
     props.children
@@ -55,9 +60,7 @@ export default function DragComponent(props) {
 
   return (
     <PanGestureHandler onGestureEvent={drag}>
-      <Animated.View style={{left: position.x, top: position.y, position: "absolute"}} onLayout={(e) => {
-        setViewSize({width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height})
-      }}>
+      <Animated.View style={{left: position.x, top: position.y, position: "absolute"}} onLayout={onLayout}>
         {props.children}
         {/* <Text style={{color: 'white', position: "absolute"}}>{Math.round(position.x)}, {Math.round(position.y)}</Text> */}
       </Animated.View>
