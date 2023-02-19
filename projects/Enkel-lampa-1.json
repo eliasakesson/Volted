@@ -1,0 +1,20 @@
+{
+    "title": "Enkel Lampa 1",
+    "description": "Lär dig koppla lampor och få dem att lysa!",
+    "popular": true,
+    "difficulty": "Lätt",
+    "id": "fheiaufbIfwaf",
+    "steps": [
+        "Koppla en kabel från batteriet till lampan.",
+        "Koppla en kabel från lampan till resistorn.",
+        "Koppla en kabel från resistorn till batteriet."
+    ],
+    "startItems": [
+        "Battery",
+        "Lamp",
+        "Resistor SVAG",
+        "Wire",
+        "Wire",
+        "Wire"
+    ]
+}

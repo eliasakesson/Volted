@@ -10,17 +10,39 @@ export default function SuccessScreen({ route, navigation }) {
 
   const { data } = route?.params;
 
-  const backToHome = () => {
-    if (data && data.difficulty){
-      const medalItems = {'Lätt': "medals-bronze", 'Medelsvår': "medals-silver", 'Svår': "medals-gold"}
-      
-      addMedal(medalItems[data.difficulty])
+  const complete = () => {
+    if (data){
+      // Get tutorial data
+      // if (getTutorialData(data.id)){
+      //   navigation.replace("HomeTab")
+      //   return
+      // }
+
+      console.log(data.difficulty)
+      // Add medal
+      addMedal(data.difficulty)
+
+      // Add as completed
+      addTutorialData(data.id)
     }
 
     navigation.replace("HomeTab")
   }
 
-  const addMedal = async (medal) => {
+  const getTutorialData = async (id) => {
+    try {
+      const data = await AsyncStorage.getItem(id)
+      return data ? true : false
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const addMedal = async (difficulty) => {
+
+    const medalItems = {'Lätt': "medals-bronze", 'Medelsvår': "medals-silver", 'Svår': "medals-gold"}
+    const medal = medalItems[difficulty]
+
     try {
       const medals = await AsyncStorage.getItem(medal)
       console.log(medals)
@@ -31,12 +53,26 @@ export default function SuccessScreen({ route, navigation }) {
     }
   }
 
+  const addTutorialData = async (id) => {
+    const json = {
+      completed: true,
+      date: new Date(),
+    }
+
+    try {
+      await AsyncStorage.setItem(id, JSON.stringify(json))
+      console.log("Added tutorial data")
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
     <View style={styles.container}>
       <FontAwesome5 name="medal" size={80} color={{'Lätt': "#cc6633", 'Medelsvår': "silver", 'Svår': "gold"}[data?.difficulty]} />
       <Text style={styles.header}>Grattis!</Text>
       <Text style={styles.text}>Du klarade lektionen {data.title}</Text>
-      <TouchableOpacity onPress={backToHome} style={styles.button}>
+      <TouchableOpacity onPress={complete} style={styles.button}>
         <Text style={styles.buttonText}>Gå tillbaka till lektioner</Text>
       </TouchableOpacity>
     </View>

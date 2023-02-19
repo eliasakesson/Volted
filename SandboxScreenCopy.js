@@ -12,7 +12,6 @@ import Battery from '../components/electronics/Battery';
 import Resistor from '../components/electronics/Resistor';
 import Wire from '../components/electronics/Wire';
 import Lamp from '../components/electronics/Lamp';
-import MPMC from '../MPMC';
 
 export default function SandboxScreen({ route, navigation }) {
 
@@ -45,54 +44,9 @@ export default function SandboxScreen({ route, navigation }) {
     newComponents[index].x2 = position.x2
     newComponents[index].y2 = position.y2
 
-    if (newComponents[index].type === 'wire'){
-      console.log("Component is wire")
+    newComponents = resetConnections(newComponents, index)
 
-      // Check if wire is connected to component
-      newComponents.forEach((component, i) => {
-        if (component.type !== 'wire'){
-          console.log("Component is not wire")
-          // Reset channels
-          if (newComponents[i].channel1 === newComponents[index].channel1){
-            newComponents[i].channel1 = null
-          }
-          if (newComponents[i].channel2 === newComponents[index].channel1){
-            newComponents[i].channel2 = null
-          }
-          if (newComponents[i].channel1 === newComponents[index].channel2){
-            newComponents[i].channel1 = null
-          }
-          if (newComponents[i].channel2 === newComponents[index].channel2){
-            newComponents[i].channel2 = null
-          }
-
-          // Wires x1 and y1 connected to components x1 and y1
-          // Components channel 1 should be wires channel 1
-          if (position.x1 === component.x1 && position.y1 === component.y1){
-            console.log("Wires x1 and y1 connected to components x1 and y1")
-            newComponents[i].channel1 = newComponents[index].channel1
-          }
-          // Wires x1 and y1 connected to components x2 and y2
-          // Components channel 2 should be wires channel 1
-          if (position.x1 === component.x2 && position.y1 === component.y2){
-            console.log("Wires x1 and y1 connected to components x2 and y2")
-            newComponents[i].channel2 = newComponents[index].channel1
-          }
-          // Wires x2 and y2 connected to components x1 and y1
-          // Components channel 1 should be wires channel 2
-          if (position.x2 === component.x1 && position.y2 === component.y1){
-            console.log("Wires x2 and y2 connected to components x1 and y1")
-            newComponents[i].channel1 = newComponents[index].channel2
-          }
-          // Wires x2 and y2 connected to components x2 and y2
-          // Components channel 2 should be wires channel 2
-          if (position.x2 === component.x2 && position.y2 === component.y2){
-            console.log("Wires x2 and y2 connected to components x2 and y2")
-            newComponents[i].channel2 = newComponents[index].channel2
-          }
-        }
-      })
-    }
+    newComponents = connectComponents(newComponents, index)
 
     console.log(newComponents)
     setComponents(newComponents)
@@ -119,6 +73,56 @@ export default function SandboxScreen({ route, navigation }) {
     return components
   }
 
+  const resetConnections = (components, index) => {
+    const component = components[index]
+
+    if (component.receiverIndex1 && components[component.receiverIndex1]){
+      components[component.receiverIndex1].receiverIndex1 = null
+      components[component.receiverIndex1].receiverIndex2 = null
+    }
+
+    if (component.receiverIndex2 && components[component.receiverIndex2]){
+      components[component.receiverIndex2].receiverIndex1 = null
+      components[component.receiverIndex2].receiverIndex2 = null
+    }
+
+    component.receiverIndex1 = null
+    component.receiverIndex2 = null
+
+    return components
+  }
+
+  const connectComponents = (components, index) => {
+    const {x1, y1, x2, y2} = components[index]
+    console.log("x1: ", x1, "y1: ", y1, "x2: ", x2, "y2: ", y2)
+
+    components.forEach((component, i) => {
+      if (i === index) return
+
+      if (Math.round(component.x1) === Math.round(x1) && Math.round(component.y1) === Math.round(y1)){
+        components[index].receiverIndex1 = i
+        components[i].receiverIndex2 = index
+      }
+ 
+      if (Math.round(component.x2) === Math.round(x1) && Math.round(component.y2) === Math.round(y1)){
+        components[index].receiverIndex1 = i
+        components[i].receiverIndex1 = index
+      }
+
+      if (Math.round(component.x1) === Math.round(x2) && Math.round(component.y1) === Math.round(y2)){
+        components[index].receiverIndex2 = i
+        components[i].receiverIndex2 = index
+      }
+
+      if (Math.round(component.x2) === Math.round(x2) && Math.round(component.y2) === Math.round(y2)){
+        components[index].receiverIndex2 = i
+        components[i].receiverIndex1 = index
+      }
+    })
+
+    return components
+  }
+
   useEffect(() => {
     if (data) navigation.setOptions({ title: data.title })
 
@@ -129,43 +133,7 @@ export default function SandboxScreen({ route, navigation }) {
         </TouchableOpacity>
       ),
     });
-
-    if (data && data.startItems){
-      const newComponents = [...components]
-
-      for (let index = 0; index < data.startItems.length; index++) {
-        const component = libraryComponents.find((component) => component.name === data.startItems[index])
-        console.log(component)
-        if (component){
-          const newComponent = createComponent(component)
-          newComponents.push(newComponent)
-        }
-      }
-
-      setComponents(newComponents)
-    }
-
-    setCurrentStep(0)
   }, [navigation])
-
-  const createComponent = (component) => {
-    if (component.type === "wire"){
-      const channel1 = null
-      const channel2 = null
-  
-      return {
-        component: component.component,
-        type: component.type,
-        channel1: channel1,
-        channel2: channel2,
-      }
-    }
-
-    return {
-      component: component.component,
-      type: component.type,
-    }
-  }
 
   useEffect(() => {
     if (sidebarOpen && tooltipOpen) setTooltipOpen(false)
@@ -176,12 +144,12 @@ export default function SandboxScreen({ route, navigation }) {
   }, [components])
 
   const libraryComponents = [
-    {component: <Battery />, type: "", name: "Battery"},
-    {component: <Resistor strength={"SVAG"} />, type: "", name: "Resistor SVAG"},
-    {component: <Resistor strength={"MEDEL"} />, type: "", name: "Resistor MEDEL"},
-    {component: <Resistor strength={"STARK"} />, type: "", name: "Resistor STARK"},
-    {component: <Lamp />, type: "", name: "Lamp"},
-    {component: <Wire />, libraryComponent: <Wire disabled />, type: "wire", name: "Wire"},
+    {component: <Battery />, type: ""},
+    {component: <Resistor strength={"SVAG"} />, type: ""},
+    {component: <Resistor strength={"MEDEL"} />, type: ""},
+    {component: <Resistor strength={"STARK"} />, type: ""},
+    {component: <Lamp />, type: ""},
+    {component: <Wire />, libraryComponent: <Wire disabled />, type: "wire"},
   ]
 
   const menu = (
@@ -202,17 +170,17 @@ export default function SandboxScreen({ route, navigation }) {
       <SideMenu menu={menu} isOpen={sidebarOpen} onChange={(open) => setSidebarOpen(open)} menuPosition="right">
         <View style={styles.container}>
           <ImageBackground resizeMode='repeat' source={require('../assets/dots.png')} style={[styles.backgroundImage, {width: width - 50, height: height - (height > width ? 150 : 75)}]} />
-          <TouchableOpacity style={[styles.trashcan, {opacity: isDragging ? 1 : 0, bottom: data ? 120 : 30}]}>
+          <TouchableOpacity style={[styles.trashcan, {opacity: isDragging ? 1 : 0, bottom: data ? 100 : 30}]}>
             <Ionicons name="trash-outline" size={40} color={colors.bg}  />
           </TouchableOpacity>
           {components.map((component, index) => {
             if (component.type === "wire"){
-              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => onDragEnd(e, index), startY : 75 + index * 50, channel1: component.channel1, channel2: component.channel2})
+              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => onDragEnd(e, index), sender1: component.sender1, sender2: component.sender2, receiver1: components[component.receiverIndex1]?.receiver1, receiver2: components[component.receiverIndex2]?.receiver2, startY : 75 + index * 50})
             }
 
             return (
               <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => onDragEnd(e, index)} startY={75 + index * 50}>
-                {React.cloneElement(component.component, {channel1: component.channel1, channel2: component.channel2})}
+                {React.cloneElement(component.component, {sender1: component.sender1, sender2: component.sender2, receiver1: components[component.receiverIndex1]?.receiver1, receiver2: components[component.receiverIndex2]?.receiver2})}
               </DragComponent>
             )
           })}

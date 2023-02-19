@@ -7,6 +7,7 @@ export default function DragComponent(props) {
 
   const [position, setPosition] = useState({x: props.startX || 75, y: props.startY || 75})
   const [viewSize, setViewSize] = useState({width: 0, height: 0})
+  const [hasLayouted, setHasLayouted] = useState(false)
 
   const margin = 25
   const headerHeight = 50
@@ -29,7 +30,7 @@ export default function DragComponent(props) {
 
       runOnJS(setPosition)({x, y})
 
-      if (props.onDrag) runOnJS(props.onDrag)({x, y, x2: x + viewSize.width, y2: y})
+      if (props.onDrag) runOnJS(props.onDrag)({x1: x, y1: y, x2: x + viewSize.width, y2: y})
     },
     onFinish: (e, ctx) => {
       // Snap position to grid
@@ -45,24 +46,26 @@ export default function DragComponent(props) {
 
       runOnJS(setPosition)({x, y})
       
-      if (props.onDragEnd) runOnJS(props.onDragEnd)({x, y, x2: x + viewSize.width, y2: y})
+      if (props.onDragEnd) runOnJS(props.onDragEnd)({x1: x, y1: y, x2: x + 50, y2: y})
     }
   })
 
   const onLayout = (e) => {
     setViewSize({width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height})
-    props.onDragEnd({x: position.x, y: position.y, x2: position.x + e.nativeEvent.layout.width, y2: position.y})
+
+    if (!hasLayouted) {
+      props.onDragEnd({x1: e.nativeEvent.layout.x, y1: e.nativeEvent.layout.y, x2: position.x + 50, y2: e.nativeEvent.layout.y})
+      setHasLayouted(true)
+    }
   }
 
-  if (props.disabled) return (
-    props.children
-  )
+  if (props.disabled) 
+    return props.children
 
   return (
     <PanGestureHandler onGestureEvent={drag}>
-      <Animated.View style={{left: position.x, top: position.y, position: "absolute"}} onLayout={onLayout}>
+      <Animated.View style={{left: position.x, top: position.y, position: "absolute", zIndex: (props.zIndex || 0)}} onLayout={onLayout}>
         {props.children}
-        {/* <Text style={{color: 'white', position: "absolute"}}>{Math.round(position.x)}, {Math.round(position.y)}</Text> */}
       </Animated.View>
     </PanGestureHandler>
   )

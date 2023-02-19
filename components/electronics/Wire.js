@@ -1,45 +1,63 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
 import DragComponent from '../DragComponent'
 import { Svg, Line } from 'react-native-svg'
 
 export default function Wire(props) {
 
+    const [id] = useState(Math.random())
+
     useEffect(() => {
-        props.receiver1?.forEach((message) => {
-            console.log("Wire: ", message)
-            props.sender2?.send(message)
-        })
+        const { channel1, channel2 } = props
 
-        props.receiver2?.forEach((message) => {
-            console.log("Wire: ", message)
-            props.sender1?.send(message)
-        })
-    }, [props.receiver1, props.receiver2])
+        channel1?.subscribe({callback: (message) => {
+            console.log("Wire1: ", message, "Sender is this:", message.sender === id)
+            if (message.sender !== id) {
+                channel2?.send({...message, sender: id})
+            }
+        }, subscriber: id})
 
-    const [line, setLine] = useState({x1: 75, y1: 95, x2: 150, y2: 95})
+        channel2?.subscribe({callback: (message) => {
+            console.log("Wire2: ", message, "Sender is this:", message.sender === id)
+            if (message.sender !== id) {
+                channel1?.send({...message, sender: id})
+            }
+        }, subscriber: id})
 
-    const onDrag1 = ({x, y}) => {
-        setLine({...line, x1: x, y1: y + 20})
+        return () => {
+            channel1?.unsubscribe(id)
+            channel2?.unsubscribe(id)
+        }
+    }, [props.channel1, props.channel2])
+
+    const [position, setPosition] = useState({x1: 0, y2: 0, x2: 0, y2: 0})
+    const [line, setLine] = useState({x1: 75, y1: 95, x2: 175, y2: 95})
+
+    const onDrag1 = ({x1, y1}) => {
+        setPosition({...position, x1, y1})
     }
 
-    const onDragEnd1 = ({x, y}) => {
-        setLine({...line, x1: x, y1: y + 20})
-        props.onDragEnd({x, y}) 
+    const onDragEnd1 = ({x1, y1}) => {
+        setPosition({...position, x1, y1})
+        props.onDragEnd({...position, x1, y1}) 
     }
 
-    const onDrag2 = ({x, y}) => {
-        setLine({...line, x2: x, y2: y + 20})
+    const onDrag2 = ({x1: x2, y1: y2}) => {
+        setPosition({...position, x2, y2})
     }
 
-    const onDragEnd2 = ({x, y}) => {
-        setLine({...line, x2: x, y2: y + 20})
-        props.onDragEnd({x, y})
+    const onDragEnd2 = ({x1: x2, y1: y2}) => {
+        setPosition({...position, x2, y2})
+        props.onDragEnd({...position, x2, y2})
     }
+
+    useEffect(() => {
+        setLine({x1: position.x1 + 20, y1: position.y1 + 20, x2: position.x2 + 20, y2: position.y2 + 20})
+    }, [position])
 
     if (props.disabled) return (
         <View style={styles.container}>
-            <Svg style={styles.svg}><Line style={styles.line} x1={0} y={18.25} x2={75}></Line></Svg>
+            <Svg style={styles.svg}><Line style={styles.line} x1={20} y={18.25} x2={95}></Line></Svg>
             <View style={styles.dragger}></View>
             <View style={styles.dragger}></View>
         </View>
@@ -48,10 +66,10 @@ export default function Wire(props) {
   return (
     <>
         <Svg style={styles.svg}><Line style={styles.line} {...line}></Line></Svg>
-        <DragComponent disabled={props.disabled} onDragStart={() => props.onDragStart()} onDrag={onDrag1} onDragEnd={onDragEnd1} startY={props.startY}>
+        <DragComponent zIndex={50} onDragStart={() => props.onDragStart()} onDrag={onDrag1} onDragEnd={onDragEnd1} startY={props.startY}>
             <View style={styles.dragger}></View>
         </DragComponent>
-        <DragComponent disabled={props.disabled} onDragStart={() => props.onDragStart()} onDrag={onDrag2} onDragEnd={onDragEnd2} startX={175} startY={props.startY} >
+        <DragComponent zIndex={50} onDragStart={() => props.onDragStart()} onDrag={onDrag2} onDragEnd={onDragEnd2} startX={175} startY={props.startY} >
             <View style={styles.dragger}></View>
         </DragComponent>
     </>
@@ -62,18 +80,23 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: 100,
-        marginLeft: 12.5,
+        width: 90,
+        marginLeft: -7.5,
+        zIndex: 50,
     },
     dragger: {
         width: 25,
         height: 25,
         backgroundColor: 'red',
         borderRadius: 12.5,
-        transform: [{translateX: -12.5}, {translateY: 6.25}],
+        transform: [{translateX: 7.5}, {translateY: 7.5}],
+        zIndex: 50,
+        borderColor: 'black',
+        borderWidth: 2,
     },
     svg: {
         position: 'absolute',
+        zIndex: 49,
     },
     line: {
         stroke: 'black',

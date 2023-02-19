@@ -1,47 +1,43 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 
 export default function Lamp(props) {
 
-    const [lightActive, setLightActive] = useState(false)
+    const [id] = useState(Math.random())
 
+    const [lightActive, setLightActive] = useState(false)
     const [lightTimeout, setLightTimeout] = useState(null)
 
     useEffect(() => {
-        props.receiver1?.forEach((message) => {
+        const { channel1, channel2 } = props
+
+        channel1?.subscribe({callback: (message) => {
             console.log("Lamp: ", message)
-            props.sender2?.send(message)
-
-            if (message === 1) {
-                setLightActive(true)
-
-                if (lightTimeout) {
-                    clearTimeout(lightTimeout)
-                }
-
-                setLightTimeout(setTimeout(() => {
-                    setLightActive(false)
-                }, 500))
+            if (message.sender !== id) {
+                channel2?.send({...message, sender: id})
             }
-        })
+            
+            setLightActive(true)
+            clearTimeout(lightTimeout)
+            setLightTimeout(setTimeout(disableLight, 950))
+        }, subscriber: id})
 
-        props.receiver2?.forEach((message) => {
+        channel2?.subscribe({callback: (message) => {
             console.log("Lamp: ", message)
-            props.sender1?.send(message)
-
-            if (message === 1) {
-                setLightActive(true)
-
-                if (lightTimeout) {
-                    clearTimeout(lightTimeout)
-                }
-
-                setLightTimeout(setTimeout(() => {
-                    setLightActive(false)
-                }, 500))
+            if (message.sender !== id) {
+                channel1?.send({...message, sender: id})
             }
-        })
-    }, [props.receiver1, props.receiver2])
+
+            setLightActive(true)
+            clearTimeout(lightTimeout)
+            setLightTimeout(setTimeout(disableLight, 950))
+        }, subscriber: id})
+
+        return () => {
+            channel1?.unsubscribe(id)
+            channel2?.unsubscribe(id)
+        }
+    }, [props.channel1, props.channel2])
 
     const disableLight = () => {
         setLightActive(false)
@@ -56,19 +52,22 @@ export default function Lamp(props) {
 
 const styles = StyleSheet.create({
     lampBase: {
-        width: 100,
+        width: 140,
         height: 40,
         borderRadius: 10,
-        overflow: 'hidden',
         flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
         zIndex: 5,
+        backgroundColor: 'darkslategrey',
+        borderColor: 'black',
+        borderWidth: 2,
     },
     lamp: {
-        height: 60,
-        width: 60,
+        height: 50,
+        width: 50,
         borderRadius: 30,
-        position: 'absolute',
-        top: -20,
-        left: 20,
+        borderWidth: 2,
+        borderColor: 'black',
     }
 })

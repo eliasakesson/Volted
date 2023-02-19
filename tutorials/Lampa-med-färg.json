@@ -3,6 +3,7 @@
     "description": "Enkel lampa med batteri, lampa och resistor.",
     "popular": false,
     "difficulty": "Medelsvår",
+    "id": "gusinguydnsubg",
     "tutorial": [
         {
             "title": "Enkel Lampa",

@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { colors } from '../colors';
+import { Button } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
 
-    const [tutorials, setTutorials] = useState([])
+    const [projects, setProjects] = useState([])
     
     useEffect(() => {
-        const context = require.context('../tutorials', true, /\.json$/);
+        const context = require.context('../projects', true, /\.json$/);
         const keys = context.keys();
         const values = keys.map(context);
-        setTutorials(values)
+        setProjects(values)
     }, [])
 
     return (
@@ -23,20 +24,16 @@ export default function HomeScreen({ navigation }) {
                 </View>
                 <AntDesign name="flag" size={50} color="#fff" />
             </TouchableOpacity>
-            <Text style={styles.header}>Populära Genomgångar</Text>
+            <Text style={styles.header}>Populära Projekt</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.popular}>
-                {tutorials.map((tutorial, index) => {
-                    if (!tutorial.popular) return null
+                {projects?.map((project, index) => {
+                    if (!project.popular) return null
 
                     return (
-                        <TouchableOpacity key={index} style={styles.popularItem} onPress={() => navigation.navigate("Tutorial", { data: tutorial })}>
+                        <TouchableOpacity key={index} style={styles.popularItem} onPress={() => navigation.navigate("Sandbox", { data: project })}>
                             <View>
-                                <Text style={styles.popularItemHeader}>{tutorial.title}</Text>
-                                <Text style={styles.popularItemText}>{tutorial.description}</Text>
-                            </View>
-                            <View style={styles.likes}>
-                                <Text style={styles.likeText}>15</Text>
-                                <Feather name="thumbs-up" size={20} color={colors.header} />
+                                <Text style={styles.popularItemHeader}>{project.title}</Text>
+                                <Text style={styles.popularItemText}>{project.description}</Text>
                             </View>
                         </TouchableOpacity>
                     )
@@ -44,16 +41,16 @@ export default function HomeScreen({ navigation }) {
             </ScrollView>
             <Text style={styles.header}>Senaste</Text>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Projekt 3</Text>
-                <Text>1 timme sedan</Text>
+                <Text style={styles.buttonTitle}>Projekt 3</Text>
+                <Text style={styles.buttonText}>1 timme sedan</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Projekt 2</Text>
-                <Text>7 timmar sedan</Text>
+                <Text style={styles.buttonTitle}>Projekt 2</Text>
+                <Text style={styles.buttonText}>7 timmar sedan</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Projekt 1</Text>
-                <Text>3 dagar sedan</Text>
+                <Text style={styles.buttonTitle}>Projekt 1</Text>
+                <Text style={styles.buttonText}>3 dagar sedan</Text>
             </TouchableOpacity>
         </ScrollView>
     )
@@ -119,7 +116,7 @@ const styles = StyleSheet.create({
     popularItem: {
         backgroundColor: colors.secondaryOpacity,
         width: 180,
-        height: 160,
+        height: 140,
 
         borderRadius: 15,
         marginHorizontal: 10,
@@ -150,18 +147,22 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: colors.card,
         width: "100%",
-        height: 80,
-        borderRadius: 15,
+        borderRadius: 10,
         borderColor: colors.border,
         borderWidth: 0.5,
         marginBottom: 15,
         justifyContent: 'center',
         paddingHorizontal: 25,
+        paddingVertical: 20,
+    },
+    buttonTitle: {
+        color: colors.text,
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 10,
     },
     buttonText: {
-        color: colors.text,
-        fontSize: 18,
-        fontWeight: "600",
-        marginBottom: 5,
-    },
+        color: colors.textLight,
+        fontSize: 14,
+    }
 });

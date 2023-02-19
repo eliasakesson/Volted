@@ -12,6 +12,8 @@ export default function TutorialScreen({ route, navigation }) {
 
     useEffect(() => {
         navigation.setOptions({ title: data.title })
+
+        setCurrentStep(0)
     }, [navigation])
 
   return (
@@ -22,18 +24,21 @@ export default function TutorialScreen({ route, navigation }) {
         <View style={styles.bottom}>
             <Text style={styles.title}>{data.tutorial[currentStep].title}</Text>
             <Text style={styles.description}>{data.tutorial[currentStep].text}</Text>
-            <View style={styles.buttons}>   
+            {!notLastStep && <TouchableOpacity style={[styles.button, {backgroundColor: colors.primary}]} onPress={() => navigation.navigate("Sandbox", { data })}>
+                <Text style={styles.buttonText}>Starta Projekt</Text>
+            </TouchableOpacity>}
+            <View style={[styles.buttons, {marginTop: notLastStep ? "auto" : 20}]}>   
                 {currentStep > 0 &&   
                     <TouchableOpacity style={[styles.button, styles.squareButton]} onPress={() => setCurrentStep(currentStep - 1)}>
                         <AntDesign name="caretleft" size={18} color="white" />
                     </TouchableOpacity>        
                 }
                 {notLastStep ? 
-                    <TouchableOpacity style={styles.button} onPress={() => setCurrentStep(currentStep + 1)}>
+                    <TouchableOpacity style={[styles.button, {flex: 1}]} onPress={() => setCurrentStep(currentStep + 1)}>
                         <Text style={styles.buttonText}>Nästa</Text>
                     </TouchableOpacity> :
-                    <TouchableOpacity style={[styles.button, {backgroundColor: colors.primary}]} onPress={() => navigation.navigate("Sandbox", { data })}>
-                        <Text style={styles.buttonText}>Starta</Text>
+                    <TouchableOpacity style={[styles.button, {flex: 1}]} onPress={() => navigation.navigate("Home")}>
+                        <Text style={styles.buttonText}>Avsluta</Text>
                     </TouchableOpacity>
                 }
             </View>
@@ -83,7 +88,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         marginTop: "auto",
-        flex: 1,
     },
     squareButton: {
         marginRight: 25,

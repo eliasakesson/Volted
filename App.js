@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { colors } from './colors';
 import ProjectsScreen from './Screens/ProjectsScreen';
+import Test from './Test';
 
 const Stack = createNativeStackNavigator();
 const HomeTab = createBottomTabNavigator();
@@ -53,6 +54,7 @@ export default function App() {
         <Stack.Screen name="Sandbox" component={SandboxScreen} options={{title: "Sandlådsläge", gestureEnabled: false}} />
         <Stack.Screen name="Tutorial" component={TutorialScreen} options={{title: "Lektion"}} />
         <Stack.Screen name="Success" component={SuccessScreen} options={{title: "Grattis!", gestureEnabled: false}} />
+        <Stack.Screen name="Test" component={Test} options={{title: "Test", gestureEnabled: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

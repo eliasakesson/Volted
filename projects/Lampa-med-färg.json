@@ -1,0 +1,14 @@
+{
+    "title": "Lampa Med Färg",
+    "description": "Enkel lampa med batteri, lampa och resistor.",
+    "popular": false,
+    "difficulty": "Medelsvår",
+    "id": "gfinnaåfiaosmnfonf",
+    "steps": [
+        "Sätt ut batteri, lampa och resistor.",
+        "Sätt ut tre kablar.",
+        "Koppla en kabel från batteriets pluspol till lampa.",
+        "Koppla en kabel från batteriets minuspol till resistorn.",
+        "Koppla en kabel från resistorn till lampan."
+    ]
+}

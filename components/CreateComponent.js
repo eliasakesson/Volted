@@ -1,16 +1,21 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { channel } from 'mpmc'
+import MPMC from '../MPMC';
 
 export default function CreateComponent(props) {
 
   const { component, libraryComponent, type, setComponents } = props
-  const [sender1, receiver1] = channel();
-  const [sender2, receiver2] = channel();
+  const channel1 = new MPMC()
+  const channel2 = new MPMC()
 
   const createComponent = () => {
     if (setComponents){
-      setComponents((prev) => [...prev, { component, type, sender1, receiver1, sender2, receiver2 }])
+      if (type === 'wire') {
+        setComponents((prev) => [...prev, { component, type, channel1, channel2 }])
+      } else {
+        setComponents((prev) => [...prev, { component, type }])
+      }
     }
   }
 
