@@ -4,22 +4,34 @@ import { View, StyleSheet, Text } from 'react-native'
 export default function Battery(props) {
 
     const [id] = useState(Math.random())
+    const [circuitClosed, setCircuitClosed] = useState(false)
 
     useEffect(() => {
         const { channel1, channel2 } = props
 
         channel1?.subscribe({callback: (message) => {
             console.log("Battery: ", message)
+            if (message.sender !== id) {
+                if (message.test) {
+                    setCircuitClosed(true)
+                }
+            }
         }, subscriber: id})
 
         const interval = setInterval(() => {
-            channel2?.send({volt: 1, sender: id})
-        }, 1000)
+            if (circuitClosed) {
+                channel2?.send({volt: 1, sender: id})
+            }
+        }, 500)
+
+        const testerInterval = setInterval(() => {
+            channel2?.send({test: true, sender: id})
+        }, 500)
 
         return () => {
-            channel1?.unsubscribe(id)
-            channel2?.unsubscribe(id)
             clearInterval(interval)
+            clearInterval(testerInterval)
+            
         }
     }, [props.channel1, props.channel2])
 
@@ -31,6 +43,7 @@ export default function Battery(props) {
         <View style={styles.positive}>
             <Text style={{color: 'white'}}>+</Text>
         </View>
+        <View style={styles.top}></View>
     </View>
   )
 }
@@ -40,7 +53,6 @@ const styles = StyleSheet.create({
         width: 90,
         height: 40,
         borderRadius: 10,
-        overflow: 'hidden',
         flexDirection: 'row',
         zIndex: 5,
         borderColor: 'black',
@@ -51,11 +63,25 @@ const styles = StyleSheet.create({
         backgroundColor: 'darkslategrey',
         justifyContent: 'center',
         paddingLeft: 10,
+        borderTopLeftRadius: 5,
+        borderBottomLeftRadius: 5,
     },
     positive: {
         flex: 1,
         backgroundColor: 'red',
         justifyContent: 'center',
         alignItems: 'center',
+        borderTopRightRadius: 5,
+        borderBottomRightRadius: 5,
+    },
+    top: {
+        position: 'absolute',
+        top: 7,
+        right: -8,
+        width: 8,
+        height: 20,
+        backgroundColor: 'darkslategrey',
+        borderTopRightRadius: 5,
+        borderBottomRightRadius: 5,
     }
 })

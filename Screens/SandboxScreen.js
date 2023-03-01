@@ -38,6 +38,8 @@ export default function SandboxScreen({ route, navigation }) {
     // Check if component is over trashcan, if so, delete it
     newComponents = checkForDeletion(newComponents, index)
     if (!newComponents) return
+
+    if (newComponents[index].x1 == position.x1 && newComponents[index].y1 == position.y1 && newComponents[index].x2 == position.x2 && newComponents[index].y2 == position.y2) return
     
     // Set the new position of the component
     newComponents[index].x1 = position.x1
@@ -45,56 +47,82 @@ export default function SandboxScreen({ route, navigation }) {
     newComponents[index].x2 = position.x2
     newComponents[index].y2 = position.y2
 
-    if (newComponents[index].type === 'wire'){
-      console.log("Component is wire")
+    const dragComponent = newComponents[index]
+
+    if (dragComponent.type === 'wire'){
 
       // Check if wire is connected to component
       newComponents.forEach((component, i) => {
         if (component.type !== 'wire'){
-          console.log("Component is not wire")
           // Reset channels
-          if (newComponents[i].channel1 === newComponents[index].channel1){
+          if (newComponents[i].channel1 === dragComponent.channel1){
             newComponents[i].channel1 = null
           }
-          if (newComponents[i].channel2 === newComponents[index].channel1){
+          if (newComponents[i].channel2 === dragComponent.channel1){
             newComponents[i].channel2 = null
           }
-          if (newComponents[i].channel1 === newComponents[index].channel2){
+          if (newComponents[i].channel1 === dragComponent.channel2){
             newComponents[i].channel1 = null
           }
-          if (newComponents[i].channel2 === newComponents[index].channel2){
+          if (newComponents[i].channel2 === dragComponent.channel2){
             newComponents[i].channel2 = null
           }
 
           // Wires x1 and y1 connected to components x1 and y1
           // Components channel 1 should be wires channel 1
           if (position.x1 === component.x1 && position.y1 === component.y1){
-            console.log("Wires x1 and y1 connected to components x1 and y1")
-            newComponents[i].channel1 = newComponents[index].channel1
+            newComponents[i].channel1 = dragComponent.channel1
           }
           // Wires x1 and y1 connected to components x2 and y2
           // Components channel 2 should be wires channel 1
           if (position.x1 === component.x2 && position.y1 === component.y2){
-            console.log("Wires x1 and y1 connected to components x2 and y2")
-            newComponents[i].channel2 = newComponents[index].channel1
+            newComponents[i].channel2 = dragComponent.channel1
           }
           // Wires x2 and y2 connected to components x1 and y1
           // Components channel 1 should be wires channel 2
           if (position.x2 === component.x1 && position.y2 === component.y1){
-            console.log("Wires x2 and y2 connected to components x1 and y1")
-            newComponents[i].channel1 = newComponents[index].channel2
+            newComponents[i].channel1 = dragComponent.channel2
           }
           // Wires x2 and y2 connected to components x2 and y2
           // Components channel 2 should be wires channel 2
           if (position.x2 === component.x2 && position.y2 === component.y2){
-            console.log("Wires x2 and y2 connected to components x2 and y2")
-            newComponents[i].channel2 = newComponents[index].channel2
+            newComponents[i].channel2 = dragComponent.channel2
+          }
+        }
+      })
+    } else {
+      dragComponent.channel1 = null
+      dragComponent.channel2 = null
+
+      // Check if component is connected to wire
+      newComponents.forEach((component, i) => {
+        if (component.type === 'wire'){
+          // Wires x1 and y1 connected to components x1 and y1
+          // Components channel 1 should be wires channel 1
+          if (position.x1 === component.x1 && position.y1 === component.y1){
+            dragComponent.channel1 = newComponents[i].channel1
+          }
+          // Wires x1 and y1 connected to components x2 and y2
+          // Components channel 2 should be wires channel 1
+          if (position.x1 === component.x2 && position.y1 === component.y2){
+            dragComponent.channel2 = newComponents[i].channel1
+          }
+          // Wires x2 and y2 connected to components x1 and y1
+          // Components channel 1 should be wires channel 2
+          if (position.x2 === component.x1 && position.y2 === component.y1){
+            dragComponent.channel1 = newComponents[i].channel2
+          }
+          // Wires x2 and y2 connected to components x2 and y2
+          // Components channel 2 should be wires channel 2
+          if (position.x2 === component.x2 && position.y2 === component.y2){
+            dragComponent.channel2 = newComponents[i].channel2
           }
         }
       })
     }
 
-    console.log(newComponents)
+    components[index] = dragComponent
+
     setComponents(newComponents)
   }
 

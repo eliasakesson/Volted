@@ -15,32 +15,37 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { colors } from './colors';
 import ProjectsScreen from './Screens/ProjectsScreen';
 import Test from './Test';
+import { View } from 'react-native';
+import DailyReward from './components/DailyReward';
 
 const Stack = createNativeStackNavigator();
 const HomeTab = createBottomTabNavigator();
 
 function HomeTabs() {
   return (
-    <HomeTab.Navigator screenOptions={({ route }) => ({tabBarShowLabel: false, headerShown: false, tabBarIcon: ({focused, color, size}) => {
-      let iconName;
-      if (route.name === 'Home') {
-        iconName = 'home';
-      } else if (route.name === 'Tutorials') {
-        iconName = 'book';
-      } else if (route.name === "Projects") {
-        iconName = 'folder1';
-      } else if (route.name === 'Awards') {
-        return <Ionicons name="md-medal-outline" size={24} color={focused ? colors.primary : colors.text} />
-      }
+    <View style={{flex: 1}}>
+      <DailyReward />
+      <HomeTab.Navigator screenOptions={({ route }) => ({tabBarShowLabel: false, headerShown: false, tabBarIcon: ({focused, color, size}) => {
+        let iconName;
+        if (route.name === 'Home') {
+          iconName = 'home';
+        } else if (route.name === 'Tutorials') {
+          iconName = 'book';
+        } else if (route.name === "Projects") {
+          iconName = 'folder1';
+        } else if (route.name === 'Awards') {
+          return <Ionicons name="md-medal-outline" size={24} color={focused ? colors.primary : colors.text} />
+        }
 
-      
-      return <AntDesign name={iconName} size={24} color={focused ? colors.primary : colors.text} />
-    }})}>
-      <HomeTab.Screen name="Home" component={HomeScreen} />
-      <HomeTab.Screen name="Tutorials" component={TutorialsScreen} />
-      <HomeTab.Screen name="Projects" component={ProjectsScreen} />
-      <HomeTab.Screen name="Awards" component={AwardsScreen} />
-    </HomeTab.Navigator>
+        
+        return <AntDesign name={iconName} size={24} color={focused ? colors.primary : colors.text} />
+      }})}>
+        <HomeTab.Screen name="Home" component={HomeScreen} />
+        <HomeTab.Screen name="Tutorials" component={TutorialsScreen} />
+        <HomeTab.Screen name="Projects" component={ProjectsScreen} />
+        <HomeTab.Screen name="Awards" component={AwardsScreen} />
+      </HomeTab.Navigator>
+    </View>
   );
 }
 
