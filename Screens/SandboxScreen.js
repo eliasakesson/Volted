@@ -12,7 +12,6 @@ import Battery from '../components/electronics/Battery';
 import Resistor from '../components/electronics/Resistor';
 import Wire from '../components/electronics/Wire';
 import Lamp from '../components/electronics/Lamp';
-import MPMC from '../MPMC';
 
 export default function SandboxScreen({ route, navigation }) {
 

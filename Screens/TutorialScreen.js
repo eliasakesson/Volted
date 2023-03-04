@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
 import { colors } from '../colors'
 import { AntDesign } from '@expo/vector-icons';
+import TEnkelLampa from '../tutorials/TLektion1';
 
 export default function TutorialScreen({ route, navigation }) {
 
@@ -17,87 +18,104 @@ export default function TutorialScreen({ route, navigation }) {
     }, [navigation])
 
   return (
-    <View style={styles.container}>
-        <View style={styles.top}>
-            {data.tutorial[currentStep].image && <Image style={styles.image} source={{uri: data.tutorial[currentStep].image}} />}
-        </View>
-        <View style={styles.bottom}>
-            <Text style={styles.title}>{data.tutorial[currentStep].title}</Text>
-            <Text style={styles.description}>{data.tutorial[currentStep].text}</Text>
-            {!notLastStep && <TouchableOpacity style={[styles.button, {backgroundColor: colors.primary}]} onPress={() => navigation.navigate("Sandbox", { data })}>
-                <Text style={styles.buttonText}>Starta Projekt</Text>
-            </TouchableOpacity>}
-            <View style={[styles.buttons, {marginTop: notLastStep ? "auto" : 20}]}>   
-                {currentStep > 0 &&   
-                    <TouchableOpacity style={[styles.button, styles.squareButton]} onPress={() => setCurrentStep(currentStep - 1)}>
-                        <AntDesign name="caretleft" size={18} color="white" />
-                    </TouchableOpacity>        
-                }
-                {notLastStep ? 
-                    <TouchableOpacity style={[styles.button, {flex: 1}]} onPress={() => setCurrentStep(currentStep + 1)}>
-                        <Text style={styles.buttonText}>Nästa</Text>
-                    </TouchableOpacity> :
-                    <TouchableOpacity style={[styles.button, {flex: 1}]} onPress={() => navigation.navigate("Home")}>
-                        <Text style={styles.buttonText}>Avsluta</Text>
-                    </TouchableOpacity>
-                }
-            </View>
-        </View>
-    </View>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+        <TEnkelLampa styles={styles} ChoiceComponent={ChoiceComponent} />
+    </ScrollView>
   )
+}
+
+function ChoiceComponent({ choices , rightAnswer }){
+
+    const [guessedAnswer, setGuessedAnswer] = useState("")
+
+    return (
+        <View style={styles.choiceComponent}>
+            {choices?.map((choice, index) => {
+                return (
+                    <TouchableOpacity style={[styles.choice, !guessedAnswer ? {} : choice === rightAnswer ? {borderColor: "#398754"} : {borderColor: "#cc0000"}]}
+                                    key={index} onPress={() => setGuessedAnswer(choice)}>
+                        <Text style={styles.choiceText}>{choice}</Text>
+                    </TouchableOpacity>
+                )
+            })}
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.bg,
-        padding: 50,
+        padding: 25,
     },
-    top: {
-        flex: 1,
-        alignItems: 'center',
+    contentContainer: {
+        paddingTop: 30,
+        paddingBottom: 80,
+
     },
-    image: {
-        width: "100%",
-        aspectRatio: 1,
-        resizeMode: 'cover',
-    },
-    bottom: {
-        flex: 1,
-        marginTop: 25,
-    },
-    title: {
-        fontSize: 20,
+    title1: {
+        fontSize: 25,
         fontWeight: 'bold',
         marginBottom: 20,
         color: colors.header,
     },
-    description: {
+    lektion: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: colors.primary,
+    },
+    title2: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginVertical: 20,
+        color: colors.header,
+    },
+    title3: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginVertical: 20,
+        color: colors.header,
+    },
+    text: {
         fontSize: 16,
         marginBottom: 20,
         color: colors.text,
     },
-    buttons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: "auto",
+    choiceComponent: {
+        flexDirection: 'column',
+        marginBottom: 50,
+    },
+    choice: {
+        backgroundColor: colors.card,
+        padding: 20,
+        borderColor: colors.border,
+        borderWidth: 1.5,
+        borderRadius: 10,
+        marginBottom: 10,
+    },
+    choiceText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: colors.text,
+    },
+    image: {
+        width: "100%",
+        height: 200,
+        resizeMode: 'cover',
+        borderRadius: 10,
+        marginBottom: 50,
     },
     button: {
-        backgroundColor: colors.text,
-        padding: 15,
+        backgroundColor: colors.primary,
+        padding: 20,
         borderRadius: 10,
-        alignItems: 'center',
-        marginTop: "auto",
-    },
-    squareButton: {
-        marginRight: 25,
-        flex: 0,
-        padding: 17,
-        justifyContent: 'center',
-        alignItems: 'center',
+        marginTop: 20,
     },
     buttonText: {
-        color: "white",
-        fontSize: 18,
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
     },
 })
