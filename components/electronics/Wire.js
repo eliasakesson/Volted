@@ -10,24 +10,20 @@ export default function Wire(props) {
     useEffect(() => {
         const { channel1, channel2 } = props
 
+        console.log("Wire: ", channel1, channel2)
         channel1?.subscribe({callback: (message) => {
-            console.log("Wire1: ", message, "Sender is this:", message.sender === id)
             if (message.sender !== id) {
+                console.log("Wire1: ", message)
                 channel2?.send({...message, sender: id})
             }
         }, subscriber: id})
 
         channel2?.subscribe({callback: (message) => {
-            console.log("Wire2: ", message, "Sender is this:", message.sender === id)
             if (message.sender !== id) {
+                console.log("Wire2: ", message)
                 channel1?.send({...message, sender: id})
             }
         }, subscriber: id})
-
-        return () => {
-            channel1?.unsubscribe(id)
-            channel2?.unsubscribe(id)
-        }
     }, [props.channel1, props.channel2])
 
     const [position, setPosition] = useState({x1: 0, y2: 0, x2: 0, y2: 0})

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useRef } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 
 export default function Lamp(props) {
@@ -6,7 +7,6 @@ export default function Lamp(props) {
     const [id] = useState(Math.random())
 
     const [lightActive, setLightActive] = useState(false)
-    const [lightTimeout, setLightTimeout] = useState(null)
 
     useEffect(() => {
         const { channel1, channel2 } = props
@@ -18,8 +18,6 @@ export default function Lamp(props) {
             }
             
             setLightActive(true)
-            clearTimeout(lightTimeout)
-            setLightTimeout(setTimeout(disableLight, 950))
         }, subscriber: id})
 
         channel2?.subscribe({callback: (message) => {
@@ -27,10 +25,8 @@ export default function Lamp(props) {
             if (message.sender !== id) {
                 channel1?.send({...message, sender: id})
             }
-
+            
             setLightActive(true)
-            clearTimeout(lightTimeout)
-            setLightTimeout(setTimeout(disableLight, 950))
         }, subscriber: id})
 
         return () => {
@@ -38,6 +34,18 @@ export default function Lamp(props) {
             channel2?.unsubscribe(id)
         }
     }, [props.channel1, props.channel2])
+
+    useEffect(() => {
+        if (lightActive) {
+            const interval = setInterval(() => {
+                setLightActive(false)
+            }, 600)
+
+            return () => {
+                clearInterval(interval)
+            }
+        }
+    }, [lightActive])
 
     const disableLight = () => {
         setLightActive(false)

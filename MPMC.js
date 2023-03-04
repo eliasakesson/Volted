@@ -5,7 +5,6 @@ function MPMC() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    console.log("Subscribers: ", subscribers.length)
     subscribers.forEach((subscriber) => {
       subscriber.callback(message.message);
     });
@@ -22,7 +21,6 @@ function MPMC() {
   }
 
   function send(message) {
-    console.log('MPMC send');
     setMessage({ message, random : Math.random() });
   }
 
