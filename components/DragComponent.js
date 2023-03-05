@@ -16,27 +16,27 @@ export default function DragComponent(props) {
 
   const drag = useAnimatedGestureHandler({
     onStart: (e, ctx) => {
-      ctx.x = position.x
-      ctx.y = position.y
+      ctx.offsetX = position.x - e.absoluteX
+      ctx.offsetY = position.y - e.absoluteY
 
       if (props.onDragStart) runOnJS(props.onDragStart)()
     },
     onActive: (e, ctx) => {
-      let x = e.translationX + ctx.x
-      let y = e.translationY + ctx.y
+      let x = e.absoluteX + ctx.offsetX
+      let y = e.absoluteY + ctx.offsetY
 
       x = Math.max(margin, Math.min(x, screenWidth - margin - viewSize.width))
       y = Math.max(margin, Math.min(y, screenHeight - margin * 3 - viewSize.height - headerHeight))
 
       runOnJS(setPosition)({x, y})
 
-      if (props.onDrag) runOnJS(props.onDrag)({x1: x, y1: y, x2: x + viewSize.width, y2: y})
+      if (props.onDrag) runOnJS(props.onDrag)({x1: x, y1: y, x2: x + viewSize.width - 40, y2: y})
     },
     onFinish: (e, ctx) => {
       // Snap position to grid
       const gridSize = 50
-      let x = e.translationX + ctx.x
-      let y = e.translationY + ctx.y
+      let x = e.absoluteX + ctx.offsetX
+      let y = e.absoluteY + ctx.offsetY
 
       x = Math.round((x + margin) / gridSize) * gridSize - margin
       y = Math.round((y + margin) / gridSize) * gridSize - margin
@@ -46,15 +46,14 @@ export default function DragComponent(props) {
 
       runOnJS(setPosition)({x, y})
       
-      if (props.onDragEnd) runOnJS(props.onDragEnd)({x1: x, y1: y, x2: x + 50, y2: y})
+      if (props.onDragEnd) runOnJS(props.onDragEnd)({x1: x, y1: y, x2: x + viewSize.width - 40, y2: y})
     }
   })
 
   const onLayout = (e) => {
-    setViewSize({width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height})
-
     if (!hasLayouted) {
-      props.onDragEnd({x1: e.nativeEvent.layout.x, y1: e.nativeEvent.layout.y, x2: position.x + 50, y2: e.nativeEvent.layout.y})
+      setViewSize({width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height})
+      props.onDragEnd({x1: e.nativeEvent.layout.x, y1: e.nativeEvent.layout.y, x2: e.nativeEvent.layout.x + e.nativeEvent.layout.width - 40, y2: e.nativeEvent.layout.y})
       setHasLayouted(true)
     }
   }

@@ -12,21 +12,26 @@ import Battery from '../components/electronics/Battery';
 import Resistor from '../components/electronics/Resistor';
 import Wire from '../components/electronics/Wire';
 import Lamp from '../components/electronics/Lamp';
+import MPMC from '../MPMC';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 export default function SandboxScreen({ route, navigation }) {
 
   const { data } = route?.params || {};
 
-  const [isDragging, setIsDragging] = useState(false)
   const [components, setComponents] = useState([])
+  const [componentsToCreate, setComponentsToCreate] = useState([])
+  
+  const [isDragging, setIsDragging] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
   const [tooltipOpen, setTooltipOpen] = useState(true)
-
   const [currentStep, setCurrentStep] = useState(0)
 
   const snapPoints = useMemo(() => ['15%', '50%'], []);
-
   const { width, height } = useWindowDimensions();
 
   const onDragEnd = (position, index) => {
@@ -34,93 +39,21 @@ export default function SandboxScreen({ route, navigation }) {
 
     let newComponents = [...components]
 
+    const {x1, y1, x2, y2} = position
+
+    if (newComponents[index].x1 == x1 && newComponents[index].y1 == y1 && newComponents[index].x2 == x2 && newComponents[index].y2 == y2) return
+
+    // Set the new position of the component
+    newComponents[index].x1 = x1
+    newComponents[index].y1 = y1
+    newComponents[index].x2 = x2
+    newComponents[index].y2 = y2
+
     // Check if component is over trashcan, if so, delete it
     newComponents = checkForDeletion(newComponents, index)
     if (!newComponents) return
 
-    if (newComponents[index].x1 == position.x1 && newComponents[index].y1 == position.y1 && newComponents[index].x2 == position.x2 && newComponents[index].y2 == position.y2) return
-    
-    // Set the new position of the component
-    newComponents[index].x1 = position.x1
-    newComponents[index].y1 = position.y1
-    newComponents[index].x2 = position.x2
-    newComponents[index].y2 = position.y2
-
-    const dragComponent = newComponents[index]
-
-    if (dragComponent.type === 'wire'){
-
-      // Check if wire is connected to component
-      newComponents.forEach((component, i) => {
-        if (component.type !== 'wire'){
-          // Reset channels
-          if (newComponents[i].channel1 === dragComponent.channel1){
-            newComponents[i].channel1 = null
-          }
-          if (newComponents[i].channel2 === dragComponent.channel1){
-            newComponents[i].channel2 = null
-          }
-          if (newComponents[i].channel1 === dragComponent.channel2){
-            newComponents[i].channel1 = null
-          }
-          if (newComponents[i].channel2 === dragComponent.channel2){
-            newComponents[i].channel2 = null
-          }
-
-          // Wires x1 and y1 connected to components x1 and y1
-          // Components channel 1 should be wires channel 1
-          if (position.x1 === component.x1 && position.y1 === component.y1){
-            newComponents[i].channel1 = dragComponent.channel1
-          }
-          // Wires x1 and y1 connected to components x2 and y2
-          // Components channel 2 should be wires channel 1
-          if (position.x1 === component.x2 && position.y1 === component.y2){
-            newComponents[i].channel2 = dragComponent.channel1
-          }
-          // Wires x2 and y2 connected to components x1 and y1
-          // Components channel 1 should be wires channel 2
-          if (position.x2 === component.x1 && position.y2 === component.y1){
-            newComponents[i].channel1 = dragComponent.channel2
-          }
-          // Wires x2 and y2 connected to components x2 and y2
-          // Components channel 2 should be wires channel 2
-          if (position.x2 === component.x2 && position.y2 === component.y2){
-            newComponents[i].channel2 = dragComponent.channel2
-          }
-        }
-      })
-    } else {
-      dragComponent.channel1 = null
-      dragComponent.channel2 = null
-
-      // Check if component is connected to wire
-      newComponents.forEach((component, i) => {
-        if (component.type === 'wire'){
-          // Wires x1 and y1 connected to components x1 and y1
-          // Components channel 1 should be wires channel 1
-          if (position.x1 === component.x1 && position.y1 === component.y1){
-            dragComponent.channel1 = newComponents[i].channel1
-          }
-          // Wires x1 and y1 connected to components x2 and y2
-          // Components channel 2 should be wires channel 1
-          if (position.x1 === component.x2 && position.y1 === component.y2){
-            dragComponent.channel2 = newComponents[i].channel1
-          }
-          // Wires x2 and y2 connected to components x1 and y1
-          // Components channel 1 should be wires channel 2
-          if (position.x2 === component.x1 && position.y2 === component.y1){
-            dragComponent.channel1 = newComponents[i].channel2
-          }
-          // Wires x2 and y2 connected to components x2 and y2
-          // Components channel 2 should be wires channel 2
-          if (position.x2 === component.x2 && position.y2 === component.y2){
-            dragComponent.channel2 = newComponents[i].channel2
-          }
-        }
-      })
-    }
-
-    components[index] = dragComponent
+    newComponents = checkConnection(newComponents, index)
 
     setComponents(newComponents)
   }
@@ -131,13 +64,16 @@ export default function SandboxScreen({ route, navigation }) {
 
     // If component is dropped inside trashcan, remove it from the components array
     if (x1 > width - 150 && y1 > height - 200 || x2 > width - 200 && y2 > height - 200){
-      components.splice(index, 1)
+      if (component.type === 'wire') {
+        components.forEach(element => {
+          if (element.channel1 === component.channel1) element.channel1 = null
+          if (element.channel2 === component.channel1) element.channel2 = null
+          if (element.channel1 === component.channel2) element.channel1 = null
+          if (element.channel2 === component.channel2) element.channel2 = null
+        });
+      }
 
-      components.forEach((component, i) => {
-        if (component.receiverIndex === index){
-          components[i].receiverIndex = null
-        }
-      })
+      components.splice(index, 1)
 
       setComponents(components)
       return null
@@ -145,6 +81,78 @@ export default function SandboxScreen({ route, navigation }) {
 
     return components
   }
+
+  const resetComponentChannels = (component, dragComponent) => {
+    if (component.channel1 === dragComponent.channel1) {
+      component.channel1 = null;
+    }
+    if (component.channel2 === dragComponent.channel1) {
+      component.channel2 = null;
+    }
+    if (component.channel1 === dragComponent.channel2) {
+      component.channel1 = null;
+    }
+    if (component.channel2 === dragComponent.channel2) {
+      component.channel2 = null;
+    }
+  };
+  
+  const connectComponentToWire = (component, wire, dragComponent) => {
+    const { x1, y1, x2, y2 } = dragComponent;
+    if (x1 === component.x1 && y1 === component.y1) {
+      component.channel1 = wire.channel1;
+    }
+    if (x1 === component.x2 && y1 === component.y2) {
+      component.channel2 = wire.channel1;
+    }
+    if (x2 === component.x1 && y2 === component.y1) {
+      component.channel1 = wire.channel2;
+    }
+    if (x2 === component.x2 && y2 === component.y2) {
+      component.channel2 = wire.channel2;
+    }
+  };
+  
+  const connectWireToComponent = (wire, component, dragComponent) => {
+    const { x1, y1, x2, y2 } = dragComponent;
+    if (x1 === component.x1 && y1 === component.y1) {
+      dragComponent.channel1 = wire.channel1;
+    }
+    if (x1 === component.x2 && y1 === component.y2) {
+      dragComponent.channel2 = wire.channel1;
+    }
+    if (x2 === component.x1 && y2 === component.y1) {
+      dragComponent.channel1 = wire.channel2;
+    }
+    if (x2 === component.x2 && y2 === component.y2) {
+      dragComponent.channel2 = wire.channel2;
+    }
+  };
+  
+  const checkConnection = (components, index) => {
+    const dragComponent = components[index];
+  
+    if (dragComponent.type === "wire") {
+      components.forEach((component) => {
+        if (component.type !== "wire") {
+          resetComponentChannels(component, dragComponent);
+          connectComponentToWire(component, dragComponent, dragComponent);
+        }
+      });
+    } else {
+      dragComponent.channel1 = null;
+      dragComponent.channel2 = null;
+  
+      components.forEach((component) => {
+        if (component.type === "wire") {
+          connectWireToComponent(component, dragComponent, dragComponent);
+        }
+      });
+    }
+  
+    components[index] = dragComponent;
+    return components;
+  };
 
   useEffect(() => {
     if (data) navigation.setOptions({ title: data.title })
@@ -157,42 +165,14 @@ export default function SandboxScreen({ route, navigation }) {
       ),
     });
 
-    if (data && data.startItems){
-      const newComponents = [...components]
+    if (components.length === 0 && data && data.startItems){
+      const componentNames = data.startItems.map((item) => libraryComponents.find((component) => component.name === item))
 
-      for (let index = 0; index < data.startItems.length; index++) {
-        const component = libraryComponents.find((component) => component.name === data.startItems[index])
-        console.log(component)
-        if (component){
-          const newComponent = createComponent(component)
-          newComponents.push(newComponent)
-        }
-      }
-
-      setComponents(newComponents)
+      setComponentsToCreate(componentNames)
     }
 
     setCurrentStep(0)
   }, [navigation])
-
-  const createComponent = (component) => {
-    if (component.type === "wire"){
-      const channel1 = null
-      const channel2 = null
-  
-      return {
-        component: component.component,
-        type: component.type,
-        channel1: channel1,
-        channel2: channel2,
-      }
-    }
-
-    return {
-      component: component.component,
-      type: component.type,
-    }
-  }
 
   useEffect(() => {
     if (sidebarOpen && tooltipOpen) setTooltipOpen(false)
@@ -203,12 +183,12 @@ export default function SandboxScreen({ route, navigation }) {
   }, [components])
 
   const libraryComponents = [
-    {component: <Battery />, type: "", name: "Battery"},
-    {component: <Resistor strength={"SVAG"} />, type: "", name: "Resistor SVAG"},
-    {component: <Resistor strength={"MEDEL"} />, type: "", name: "Resistor MEDEL"},
-    {component: <Resistor strength={"STARK"} />, type: "", name: "Resistor STARK"},
-    {component: <Lamp />, type: "", name: "Lamp"},
-    {component: <Wire />, libraryComponent: <Wire disabled />, type: "wire", name: "Wire"},
+    {component: <Wire />, libraryComponent: <Wire disabled />, type: "wire", name: "Sladd"},
+    {component: <Battery />, type: "", name: "Batteri"},
+    {component: <Resistor strength={"SVAG"} />, type: "", name: "Resistor Svag"},
+    {component: <Resistor strength={"MEDEL"} />, type: "", name: "Resistor Medel"},
+    {component: <Resistor strength={"STARK"} />, type: "", name: "Resistor Stark"},
+    {component: <Lamp />, type: "", name: "Lampa"},
   ]
 
   const menu = (
@@ -217,7 +197,7 @@ export default function SandboxScreen({ route, navigation }) {
       <View style={styles.library}>
         {libraryComponents.map((component, index) => {
           return (
-            <CreateComponent key={index} component={component.component} libraryComponent={component.libraryComponent} type={component.type} setComponents={setComponents} />
+            <CreateComponent {...component} key={index} setComponents={setComponents} componentsToCreate={componentsToCreate} setComponentsToCreate={setComponentsToCreate} />
           )
         })}
       </View>

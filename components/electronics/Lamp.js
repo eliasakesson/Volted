@@ -1,32 +1,48 @@
-import React, { useEffect, useState } from 'react'
-import { useRef } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import { View, StyleSheet } from 'react-native'
 
 export default function Lamp(props) {
 
     const [id] = useState(Math.random())
 
     const [lightActive, setLightActive] = useState(false)
+    const timeoutRef = useRef();
 
     useEffect(() => {
         const { channel1, channel2 } = props
 
         channel1?.subscribe({callback: (message) => {
-            console.log("Lamp: ", message)
             if (message.sender !== id) {
+                console.log("Lamp: ", message)
                 channel2?.send({...message, sender: id})
+
+                if (message.volt > 0){
+                    setLightActive(true);
+                    clearTimeout(timeoutRef.current);
+                    timeoutRef.current = setTimeout(() => {
+                        setLightActive(false);
+                        // Clear interval ID reference
+                        timeoutRef.current = undefined;
+                    }, 600);
+                }
             }
-            
-            setLightActive(true)
         }, subscriber: id})
 
         channel2?.subscribe({callback: (message) => {
-            console.log("Lamp: ", message)
             if (message.sender !== id) {
+                console.log("Lamp: ", message)
                 channel1?.send({...message, sender: id})
+
+                if (message.volt > 0){
+                    setLightActive(true);
+                    clearTimeout(timeoutRef.current);
+                    timeoutRef.current = setTimeout(() => {
+                        setLightActive(false);
+                        // Clear interval ID reference
+                        timeoutRef.current = undefined;
+                    }, 600);
+                }
             }
-            
-            setLightActive(true)
         }, subscriber: id})
 
         return () => {
@@ -36,24 +52,19 @@ export default function Lamp(props) {
     }, [props.channel1, props.channel2])
 
     useEffect(() => {
-        if (lightActive) {
-            const interval = setInterval(() => {
-                setLightActive(false)
-            }, 600)
-
-            return () => {
-                clearInterval(interval)
-            }
-        }
-    }, [lightActive])
-
-    const disableLight = () => {
-        setLightActive(false)
-    }
+        return () => {
+            clearInterval(timeoutRef.current);
+            timeoutRef.current = undefined;
+          };
+    }, [])
 
   return (
     <View style={styles.lampBase}>
-        <View style={[styles.lamp, {backgroundColor: lightActive ? "yellow" : "grey"}]}></View>
+        <View style={[styles.baseSide, {borderBottomRightRadius: 0}]}></View>
+        <View style={styles.baseCenter}>
+            <View style={[styles.lamp, {backgroundColor: lightActive ? "yellow" : "rgba(155, 155, 155, 0.25)"}]}></View>
+        </View>
+        <View style={[styles.baseSide, {borderBottomLeftRadius: 0}]}></View>
     </View>
   )
 }
@@ -64,18 +75,35 @@ const styles = StyleSheet.create({
         height: 40,
         borderRadius: 10,
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-end',
         zIndex: 5,
+    },
+    baseCenter: {
+        width: 60,
+        height: 10,
+        backgroundColor: 'darkslategrey',
+        borderColor: 'black',
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+    },
+    baseSide: {
+        width: 40,
+        height: 40,
+        borderRadius: 10,
         backgroundColor: 'darkslategrey',
         borderColor: 'black',
         borderWidth: 2,
     },
     lamp: {
-        height: 50,
+        height: 60,
         width: 50,
-        borderRadius: 30,
+        borderTopRightRadius: 30,
+        borderTopLeftRadius: 30,
         borderWidth: 2,
+        borderBottomWidth: 0,
         borderColor: 'black',
+        marginBottom: 8,
     }
 })

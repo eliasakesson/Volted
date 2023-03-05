@@ -27,21 +27,28 @@ export default function AwardsScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
+        <View style={styles.topColor}></View>
         <View style={styles.medals}>
             <View style={styles.medalColumn}>
                 <FontAwesome5 name="medal" size={60} color="silver" />
-                <Text style={styles.medalText}>{medals.silver}</Text>
+                <View style={[styles.medalCount, {backgroundColor: "silver"}]}>
+                    <Text style={styles.medalText}>{medals.silver}</Text>
+                </View>
             </View>
             <View style={styles.medalColumn}>
                 <FontAwesome5 name="medal" size={80} color="gold" />
-                <Text style={styles.medalText}>{medals.gold}</Text>
+                <View style={[styles.medalCount, {backgroundColor: "gold"}]}>
+                    <Text style={styles.medalText}>{medals.gold}</Text>
+                </View>
             </View>
             <View style={styles.medalColumn}>
                 <FontAwesome5 name="medal" size={50} color="#cc6633" />
-                <Text style={styles.medalText}>{medals.bronze}</Text>
+                <View style={[styles.medalCount, {backgroundColor: "#cc6633"}]}>
+                    <Text style={styles.medalText}>{medals.bronze}</Text>
+                </View>
             </View>
         </View>
-        <View>
+        <View style={styles.wrapper}>
             <Text style={styles.header}>Senaste medaljer</Text>
         </View>
     </ScrollView>
@@ -52,25 +59,44 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.bg,
-        padding: 25,
-        paddingTop: 100,
+    },
+    topColor: {
+        backgroundColor: colors.text,
+        height: 1000,
+        width: "100%",
+        position: "absolute",
+        top: -1000,
+        left: 0,
+        zIndex: -1,
     },
     medals: {
+        paddingHorizontal: 10,
+        paddingTop: 100,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'flex-end',
-        marginBottom: 25,
+        backgroundColor: colors.text,
     },
     medalColumn: {
         flexDirection: 'column',
         alignItems: 'center',
         flex: 1,
     },
+    medalCount: {
+        marginTop: 25,
+        paddingVertical: 20,
+        paddingHorizontal: 25,
+        backgroundColor: "gold",
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
     medalText: {
-        color: colors.header,
-        fontSize: 25,
+        color: colors.text,
+        fontSize: 30,
         fontWeight: 'bold',
-        marginVertical: 25,
+    },
+    wrapper: {
+        padding: 20,
     },
     header: {
         fontSize: 20,

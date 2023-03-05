@@ -2,30 +2,25 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { colors } from '../colors'
 import { Animated } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { projects as orgProjects, projectCard, difficulties } from '../projects/projects';
 
 export default function ProjectsScreen({ navigation }) {
 
   const [selectedTab, setSelectedTab] = useState(0);
   const tabProgress = useRef(new Animated.Value(0)).current;
   const [selectedFilter, setSelectedFilter] = useState(0);
-  const [projects, setProjects] = useState([])
+  const [projects, setProjects] = useState(orgProjects || [])
 
-  const difficulties = ["Lätt", "Medelsvår", "Svår"]
-
-    
   useEffect(() => {
-    const context = require.context('../projects', true, /\.json$/);
-    const keys = context.keys();
-    const values = keys.map(context);
+    const projectsCopy = [...projects]
 
     const getProjectData = async () => {
-      Promise.all(values.map(async (project, index) => {
+      Promise.all(projects.map(async (project, index) => {
         const data = await AsyncStorage.getItem(project.id)
-        values[index] = {...project, ...JSON.parse(data)}
+        projectsCopy[index] = {...project, ...JSON.parse(data)}
       })).then(() => {
-        setProjects(values)
+        setProjects(projectsCopy)
       }).catch((e) => {
         console.log(e)
       })
@@ -42,31 +37,6 @@ export default function ProjectsScreen({ navigation }) {
     }).start();
   }, [selectedTab])
 
-  const getTimeSince = (date) => {
-    const seconds = Math.floor((new Date() - date) / 1000);
-    let interval = seconds / 31536000;
-    if (interval > 1) {
-      return Math.floor(interval) + " år";
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " månader";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " dagar";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " timmar";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " minuter";
-    }
-    return Math.floor(seconds) + " sekunder";
-  }
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.top}>
@@ -75,17 +45,17 @@ export default function ProjectsScreen({ navigation }) {
           <Animated.View style={[styles.tabSelected, {left: tabProgress}]} />
           <TouchableWithoutFeedback onPress={() => setSelectedTab(0)}>
             <View style={styles.tab}>
-              <Text style={styles.tabText}>Lätta</Text>
+              <Text style={styles.tabText}>{difficulties[0]}</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => setSelectedTab(1)}>
             <View style={styles.tab}>
-              <Text style={styles.tabText}>Mellan</Text>
+              <Text style={styles.tabText}>{difficulties[1]}</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => setSelectedTab(2)}>
             <View style={styles.tab}>
-              <Text style={styles.tabText}>Svåra</Text>
+              <Text style={styles.tabText}>{difficulties[2]}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -105,22 +75,9 @@ export default function ProjectsScreen({ navigation }) {
       </View>
       <View style={styles.buttons} showsVerticalScrollIndicator={false}>
         {projects?.filter(({difficulty, completed}) => (
-          difficulty === difficulties[selectedTab] && (selectedFilter === 0 || (selectedFilter === 1 && !completed) || (selectedFilter === 2 && completed))
+          difficulty === selectedTab && (selectedFilter === 0 || (selectedFilter === 1 && !completed) || (selectedFilter === 2 && completed))
         ))?.map((project, index) => {
-          return (
-            <TouchableOpacity onPress={() => navigation.navigate("Sandbox", {data: project})} key={index} style={styles.button}>
-              <View style={styles.innerButton}>
-                <Text style={styles.buttonTitle}>{project.title}</Text>
-                <Text style={styles.buttonText}>{project.description}</Text>
-              </View>
-              {project?.date && (
-                <View style={[styles.innerButton, {borderTopColor: colors.border, borderTopWidth: 0.5, flexDirection: "row"}]}>
-                  <Text style={styles.buttonLightText}>Avklarad för {getTimeSince(new Date(project.date))} sedan</Text>
-                  <FontAwesome5 name="medal" size={18} color={{'Lätt': "#cc6633", 'Medelsvår': "silver", 'Svår': "gold"}[project?.difficulty]} />
-                </View> 
-              )}
-            </TouchableOpacity>
-          )
+          return projectCard(project, navigation)
         })}
       </View>
     </ScrollView>

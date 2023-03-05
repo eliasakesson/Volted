@@ -40,7 +40,7 @@ export default function SuccessScreen({ route, navigation }) {
 
   const addMedal = async (difficulty) => {
 
-    const medalItems = {'Lätt': "medals-bronze", 'Medelsvår': "medals-silver", 'Svår': "medals-gold"}
+    const medalItems = ["medals-bronze", "medals-silver", "medals-gold"]
     const medal = medalItems[difficulty]
 
     try {
@@ -69,7 +69,7 @@ export default function SuccessScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <FontAwesome5 name="medal" size={80} color={{'Lätt': "#cc6633", 'Medelsvår': "silver", 'Svår': "gold"}[data?.difficulty]} />
+      <FontAwesome5 name="medal" size={80} color={["#cc6633", "silver", "gold"][data.difficulty]} />
       <Text style={styles.header}>Grattis!</Text>
       <Text style={styles.text}>Du klarade lektionen {data.title}</Text>
       <TouchableOpacity onPress={complete} style={styles.button}>

@@ -13,14 +13,12 @@ export default function Wire(props) {
         console.log("Wire: ", channel1, channel2)
         channel1?.subscribe({callback: (message) => {
             if (message.sender !== id) {
-                console.log("Wire1: ", message)
                 channel2?.send({...message, sender: id})
             }
         }, subscriber: id})
 
         channel2?.subscribe({callback: (message) => {
             if (message.sender !== id) {
-                console.log("Wire2: ", message)
                 channel1?.send({...message, sender: id})
             }
         }, subscriber: id})
@@ -83,7 +81,7 @@ const styles = StyleSheet.create({
     dragger: {
         width: 25,
         height: 25,
-        backgroundColor: 'red',
+        backgroundColor: 'gray',
         borderRadius: 12.5,
         transform: [{translateX: 7.5}, {translateY: 7.5}],
         zIndex: 50,

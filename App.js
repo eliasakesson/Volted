@@ -25,25 +25,28 @@ function HomeTabs() {
   return (
     <View style={{flex: 1}}>
       <DailyReward />
-      <HomeTab.Navigator screenOptions={({ route }) => ({tabBarShowLabel: false, headerShown: false, tabBarIcon: ({focused, color, size}) => {
-        let iconName;
-        if (route.name === 'Home') {
-          iconName = 'home';
-        } else if (route.name === 'Tutorials') {
-          iconName = 'book';
-        } else if (route.name === "Projects") {
-          iconName = 'folder1';
-        } else if (route.name === 'Awards') {
-          return <Ionicons name="md-medal-outline" size={24} color={focused ? colors.primary : colors.text} />
+      <HomeTab.Navigator screenOptions={({ route }) => ({
+        headerShown: false, 
+        tabBarActiveTintColor: colors.primary,
+        tabBarIcon: ({focused}) => {
+          let iconName;
+          if (route.name === 'Home') {
+            iconName = 'home';
+          } else if (route.name === 'Tutorials') {
+            iconName = 'book';
+          } else if (route.name === "Projects") {
+            iconName = 'folder1';
+          } else if (route.name === 'Awards') {
+            return <Ionicons name="md-medal-outline" size={24} color={focused ? colors.primary : colors.text} />
+          }
+          
+          return <AntDesign name={iconName} size={24} color={focused ? colors.primary : colors.text} />
         }
-
-        
-        return <AntDesign name={iconName} size={24} color={focused ? colors.primary : colors.text} />
-      }})}>
-        <HomeTab.Screen name="Home" component={HomeScreen} />
-        <HomeTab.Screen name="Tutorials" component={TutorialsScreen} />
-        <HomeTab.Screen name="Projects" component={ProjectsScreen} />
-        <HomeTab.Screen name="Awards" component={AwardsScreen} />
+      })}>
+        <HomeTab.Screen name="Home" component={HomeScreen} options={{tabBarLabel: "Hem"}} />
+        <HomeTab.Screen name="Tutorials" component={TutorialsScreen} options={{tabBarLabel: "Lektioner"}} />
+        <HomeTab.Screen name="Projects" component={ProjectsScreen} options={{tabBarLabel: "Projekt"}} />
+        <HomeTab.Screen name="Awards" component={AwardsScreen} options={{tabBarLabel: "Medaljer"}} />
       </HomeTab.Navigator>
     </View>
   );

@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 
-export default function TEnkelLampa({ styles, ChoiceComponent }) {
+export default function TEnkelLampa({ styles, ChoiceComponent, toNextScreen, navigation }) {
+  
   return (
     <>
       <Text style={styles.lektion}>Lektion 1</Text>
@@ -26,7 +27,7 @@ export default function TEnkelLampa({ styles, ChoiceComponent }) {
 
       <Text style={styles.title2}>Redo att sätta kunskapen på prov?</Text>
       <Text style={styles.text}>Klicka på knappen nedan för att gå vidare till nästa projekt.</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Sandbox")}>
+      <TouchableOpacity style={styles.button} onPress={() => toNextScreen()}>
         <Text style={styles.buttonText}>Starta Projekt</Text>
       </TouchableOpacity>
     </>

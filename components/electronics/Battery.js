@@ -10,8 +10,8 @@ export default function Battery(props) {
         const { channel1, channel2 } = props
 
         channel1?.subscribe({callback: (message) => {
-            console.log("Battery: ", message)
             if (message.sender !== id) {
+                console.log("Battery: ", message)
                 if (message.test) {
                     setCircuitClosed(true)
                 }
@@ -25,13 +25,14 @@ export default function Battery(props) {
         }, 500)
 
         const testerInterval = setInterval(() => {
-            channel2?.send({test: true, sender: id})
+            if (!circuitClosed) {
+                channel2?.send({test: true, sender: id})
+            }
         }, 500)
 
         return () => {
             clearInterval(interval)
-            clearInterval(testerInterval)
-            
+            clearInterval(testerInterval) 
         }
     }, [props.channel1, props.channel2])
 

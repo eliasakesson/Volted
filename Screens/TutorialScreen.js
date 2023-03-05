@@ -1,39 +1,43 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
 import { colors } from '../colors'
-import { AntDesign } from '@expo/vector-icons';
-import TEnkelLampa from '../tutorials/TLektion1';
+import { projects } from '../projects/projects'
+import { tutorials } from '../tutorials/tutorials'
 
 export default function TutorialScreen({ route, navigation }) {
 
-    const { data } = route.params;
-    const [currentStep, setCurrentStep] = useState(0)
+    const { data: tutorial } = route.params;
 
-    const notLastStep = currentStep < data.tutorial.length - 1
-
-    useEffect(() => {
-        navigation.setOptions({ title: data.title })
-
-        setCurrentStep(0)
-    }, [navigation])
+    const toNextScreen = () => {
+        const nextTutorial = tutorials.find(tempTutorial => tempTutorial.id === tutorial.next)
+        const nextProject = projects.find(project => project.id === tutorial.next)
+        console.log(nextTutorial, nextProject)
+        if (nextTutorial) {
+            navigation.navigate("Tutorial", { data: nextTutorial })
+        } else if (nextProject) {
+            navigation.navigate("Sandbox", { data: nextProject })
+        } else {
+            navigation.navigate("Home")
+        }
+    }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <TEnkelLampa styles={styles} ChoiceComponent={ChoiceComponent} />
+        {React.cloneElement(tutorial.screen, { styles, ChoiceComponent, toNextScreen, navigation })}
     </ScrollView>
   )
 }
 
 function ChoiceComponent({ choices , rightAnswer }){
 
-    const [guessedAnswer, setGuessedAnswer] = useState("")
+    const [guessedAnswers, setGuessedAnswers] = useState([])
 
     return (
         <View style={styles.choiceComponent}>
             {choices?.map((choice, index) => {
                 return (
-                    <TouchableOpacity style={[styles.choice, !guessedAnswer ? {} : choice === rightAnswer ? {borderColor: "#398754"} : {borderColor: "#cc0000"}]}
-                                    key={index} onPress={() => setGuessedAnswer(choice)}>
+                    <TouchableOpacity style={[styles.choice, guessedAnswers.indexOf(choice) < 0 ? {} : choice === rightAnswer ? {borderColor: "#398754"} : {borderColor: "#cc0000"}]}
+                                    key={index} onPress={() => setGuessedAnswers((answers) => [...answers, choice])}>
                         <Text style={styles.choiceText}>{choice}</Text>
                     </TouchableOpacity>
                 )
@@ -72,7 +76,7 @@ const styles = StyleSheet.create({
         color: colors.header,
     },
     title3: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         marginVertical: 20,
         color: colors.header,
@@ -84,7 +88,7 @@ const styles = StyleSheet.create({
     },
     choiceComponent: {
         flexDirection: 'column',
-        marginBottom: 50,
+        marginBottom: 20,
     },
     choice: {
         backgroundColor: colors.card,
