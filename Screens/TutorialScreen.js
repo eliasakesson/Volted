@@ -8,6 +8,10 @@ export default function TutorialScreen({ route, navigation }) {
 
     const { data: tutorial } = route.params;
 
+    useEffect(() => {
+        navigation.setOptions({ title: tutorial.title })
+    }, [tutorial])
+
     const toNextScreen = () => {
         const nextTutorial = tutorials.find(tempTutorial => tempTutorial.id === tutorial.next)
         const nextProject = projects.find(project => project.id === tutorial.next)
@@ -23,7 +27,7 @@ export default function TutorialScreen({ route, navigation }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        {React.cloneElement(tutorial.screen, { styles, ChoiceComponent, toNextScreen, navigation })}
+        {React.cloneElement(tutorial.screen, { styles, ChoiceComponent, toNextScreen })}
     </ScrollView>
   )
 }
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
     image: {
         width: "100%",
         height: 200,
-        resizeMode: 'cover',
+        resizeMode: 'contain',
         borderRadius: 10,
         marginBottom: 50,
     },

@@ -29,7 +29,7 @@ export const projects = [
     {
         screen: null,
         title: "Ljusstyrka på lampa",
-        description: "Använd en lampa, ett batteri och en resistor (20ohm) för att få lampan att lysa.",
+        description: "Använd en lampa, ett batteri och en svag resistor för att få lampan att lysa.",
         id: "p86534",
         popular: true,
         difficulty: 0,
@@ -42,8 +42,8 @@ export const projects = [
     },
     {
         screen: null,
-        title: "Enkel lampa",
-        description: "Använd en lampa och ett batteri för att få lampan att lysa.",
+        title: "Lampa med knapp",
+        description: "Använd en lampa, ett batteri och en knapp för att få lampan att lysa.",
         id: "p57634",
         popular: true,
         difficulty: 0,
@@ -53,7 +53,7 @@ export const projects = [
             "Koppla en kabel från lampan till resistorn.",
             "Koppla en kabel från resistorn till batteriet."
         ]
-    }
+    },
 ]
 
 export const difficulties = ["Enkel", "Mellan", "Svår"]

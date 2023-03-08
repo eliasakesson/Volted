@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors } from "../colors";
 
 import TLektion1 from "./TLektion1";
+import TLektion2 from "./TLektion2";
 
 export const tutorials = [
     {
@@ -17,7 +18,7 @@ export const tutorials = [
         next: "t43985",
     },
     {
-        screen: <TLektion1 />,
+        screen: <TLektion2 />,
         title: "Vad är en elektrisk krets?",
         id: "t43985",
         popular: true,

@@ -20,15 +20,15 @@ export default function CreateComponent(props) {
     }
   }
 
-  useEffect(() => {
-    const components = componentsToCreate.filter((c) => c.name === name)
-    if (components.length === 0) return
+  // useEffect(() => {
+  //   const components = componentsToCreate.filter((c) => c.name === name)
+  //   if (components.length === 0) return
     
-    components.forEach((c) => {
-      createComponent()
-    })
-    setComponentsToCreate((prev) => prev.filter((c) => c.name !== name))
-  }, [componentsToCreate])
+  //   components.forEach((c) => {
+  //     createComponent()
+  //   })
+  //   setComponentsToCreate((prev) => prev.filter((c) => c.name !== name))
+  // }, [componentsToCreate])
 
   return (
     <TouchableOpacity style={{marginBottom: 20}} onPress={() => createComponent()}>

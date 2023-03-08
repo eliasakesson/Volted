@@ -62,7 +62,9 @@ export default function Lamp(props) {
     <View style={styles.lampBase}>
         <View style={[styles.baseSide, {borderBottomRightRadius: 0}]}></View>
         <View style={styles.baseCenter}>
-            <View style={[styles.lamp, {backgroundColor: lightActive ? "yellow" : "rgba(155, 155, 155, 0.25)"}]}></View>
+            <View style={[styles.lamp, {backgroundColor: lightActive ? "yellow" : "rgba(155, 155, 155, 0.25)"}]}>
+                <View style={styles.lampCenter}></View>
+            </View>
         </View>
         <View style={[styles.baseSide, {borderBottomLeftRadius: 0}]}></View>
     </View>
@@ -77,6 +79,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
         zIndex: 5,
+        marginTop: 30,
     },
     baseCenter: {
         width: 60,
@@ -105,5 +108,18 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
         borderColor: 'black',
         marginBottom: 8,
+
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+    },
+    lampCenter: {
+        width: 20,
+        height: 30,
+        borderWidth: 2,
+        borderBottomWidth: 0,
+        borderColor: 'black',
+        backgroundColor: '#ffff0050',
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
     }
 })

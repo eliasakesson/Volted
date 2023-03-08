@@ -55,6 +55,7 @@ export default function SandboxScreen({ route, navigation }) {
 
     newComponents = checkConnection(newComponents, index)
 
+    console.log(newComponents)
     setComponents(newComponents)
   }
 
@@ -97,8 +98,8 @@ export default function SandboxScreen({ route, navigation }) {
     }
   };
   
-  const connectComponentToWire = (component, wire, dragComponent) => {
-    const { x1, y1, x2, y2 } = dragComponent;
+  const connectComponentToWire = (component, wire) => {
+    const { x1, y1, x2, y2 } = wire;
     if (x1 === component.x1 && y1 === component.y1) {
       component.channel1 = wire.channel1;
     }
@@ -113,19 +114,19 @@ export default function SandboxScreen({ route, navigation }) {
     }
   };
   
-  const connectWireToComponent = (wire, component, dragComponent) => {
-    const { x1, y1, x2, y2 } = dragComponent;
+  const connectWireToComponent = (wire, component) => {
+    const { x1, y1, x2, y2 } = wire;
     if (x1 === component.x1 && y1 === component.y1) {
-      dragComponent.channel1 = wire.channel1;
+      component.channel1 = wire.channel1;
     }
     if (x1 === component.x2 && y1 === component.y2) {
-      dragComponent.channel2 = wire.channel1;
+      component.channel2 = wire.channel1;
     }
     if (x2 === component.x1 && y2 === component.y1) {
-      dragComponent.channel1 = wire.channel2;
+      component.channel1 = wire.channel2;
     }
     if (x2 === component.x2 && y2 === component.y2) {
-      dragComponent.channel2 = wire.channel2;
+      component.channel2 = wire.channel2;
     }
   };
   
@@ -136,7 +137,7 @@ export default function SandboxScreen({ route, navigation }) {
       components.forEach((component) => {
         if (component.type !== "wire") {
           resetComponentChannels(component, dragComponent);
-          connectComponentToWire(component, dragComponent, dragComponent);
+          connectComponentToWire(component, dragComponent);
         }
       });
     } else {
@@ -145,7 +146,7 @@ export default function SandboxScreen({ route, navigation }) {
   
       components.forEach((component) => {
         if (component.type === "wire") {
-          connectWireToComponent(component, dragComponent, dragComponent);
+          connectWireToComponent(component, dragComponent);
         }
       });
     }

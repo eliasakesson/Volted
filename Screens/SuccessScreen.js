@@ -13,10 +13,10 @@ export default function SuccessScreen({ route, navigation }) {
   const complete = () => {
     if (data){
       // Get tutorial data
-      // if (getTutorialData(data.id)){
-      //   navigation.replace("HomeTab")
-      //   return
-      // }
+      if (getTutorialData(data.id)){
+        navigation.replace("HomeTab")
+        return
+      }
 
       console.log(data.difficulty)
       // Add medal
@@ -24,6 +24,9 @@ export default function SuccessScreen({ route, navigation }) {
 
       // Add as completed
       addTutorialData(data.id)
+
+      // Add to list of completed tutorials
+      addToCompletedTutorials(data.id)
     }
 
     navigation.replace("HomeTab")
@@ -62,6 +65,21 @@ export default function SuccessScreen({ route, navigation }) {
     try {
       await AsyncStorage.setItem(id, JSON.stringify(json))
       console.log("Added tutorial data")
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const addToCompletedTutorials = async (data) => {
+    try {
+      const completedTutorials = await AsyncStorage.getItem("completed-tutorials")
+      if (completedTutorials){
+        const completedTutorialsArray = JSON.parse(completedTutorials)
+        completedTutorialsArray.push({title: data.title, id: data.id, difficulty: data.difficulty})
+        await AsyncStorage.setItem("completed-tutorials", JSON.stringify(completedTutorialsArray))
+      } else {
+        await AsyncStorage.setItem("completed-tutorials", JSON.stringify([{title: data.title, id: data.id, difficulty: data.difficulty}]))
+      }
     } catch (e) {
       console.log(e)
     }

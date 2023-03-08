@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 
-export default function TEnkelLampa({ styles, ChoiceComponent, toNextScreen, navigation }) {
+export default function TEnkelLampa({ styles, ChoiceComponent, toNextScreen }) {
   
   return (
     <>
@@ -25,10 +25,10 @@ export default function TEnkelLampa({ styles, ChoiceComponent, toNextScreen, nav
       <Image style={styles.image} source={{uri: "https://djursajten.se/wp-content/uploads/2021/05/pojke-med-statiskt-laddat-ha%CC%8Ar-600x400.jpg"}} />
       <Text style={styles.text}>Ett annat exempel på statisk elektricitet är när det slår ner en blixt vid oväder.</Text>
 
-      <Text style={styles.title2}>Redo att sätta kunskapen på prov?</Text>
-      <Text style={styles.text}>Klicka på knappen nedan för att gå vidare till nästa projekt.</Text>
+      <Text style={styles.title2}>Redo att gå vidare?</Text>
+      <Text style={styles.text}>Klicka på knappen nedan för att gå vidare till nästa lektion.</Text>
       <TouchableOpacity style={styles.button} onPress={() => toNextScreen()}>
-        <Text style={styles.buttonText}>Starta Projekt</Text>
+        <Text style={styles.buttonText}>Nästa Lektion</Text>
       </TouchableOpacity>
     </>
   )

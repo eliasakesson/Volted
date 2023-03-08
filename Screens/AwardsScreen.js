@@ -24,7 +24,6 @@ export default function AwardsScreen({ navigation }) {
         }
     }
 
-
   return (
     <ScrollView style={styles.container}>
         <View style={styles.topColor}></View>
