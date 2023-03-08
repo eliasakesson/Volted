@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
+import { SandboxContext } from '../contexts'
 
 export default function Lamp(props) {
 
     const [id] = useState(Math.random())
+    const { isDragging } = useContext(SandboxContext)
 
     const [lightActive, setLightActive] = useState(false)
     const timeoutRef = useRef();
@@ -62,16 +64,29 @@ export default function Lamp(props) {
     <View style={styles.lampBase}>
         <View style={[styles.baseSide, {borderBottomRightRadius: 0}]}></View>
         <View style={styles.baseCenter}>
-            <View style={[styles.lamp, {backgroundColor: lightActive ? "yellow" : "rgba(155, 155, 155, 0.25)"}]}>
+            <View style={[styles.lamp, {backgroundColor: lightActive ? "#ffff0075" : "rgba(155, 155, 155, 0.25)"}]}>
                 <View style={styles.lampCenter}></View>
             </View>
         </View>
         <View style={[styles.baseSide, {borderBottomLeftRadius: 0}]}></View>
+        {!props.disabled && isDragging && <>
+        <View style={[styles.dropCircle, {left: 7.5, top: 7.5}]}></View>
+        <View style={[styles.dropCircle, {right: 7.5, top: 7.5}]}></View>
+      </>}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+    dropCircle: {
+        height: 25,
+        width: 25,
+        borderRadius : 12.5,
+        borderStyle: 'dashed',
+        borderWidth: 1, 
+        borderColor: '#ffffffcc',
+        position: 'absolute',
+    },
     lampBase: {
         width: 140,
         height: 40,
@@ -79,12 +94,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
         zIndex: 5,
-        marginTop: 30,
     },
     baseCenter: {
         width: 60,
         height: 10,
-        backgroundColor: 'darkslategrey',
+        backgroundColor: '#555',
         borderColor: 'black',
         borderTopWidth: 2,
         borderBottomWidth: 2,
@@ -95,9 +109,12 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 10,
-        backgroundColor: 'darkslategrey',
+        backgroundColor: '#555',
         borderColor: 'black',
         borderWidth: 2,
+
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     lamp: {
         height: 60,
@@ -121,5 +138,5 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffff0050',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
-    }
+    },
 })

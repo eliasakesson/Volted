@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
+import { SandboxContext } from '../contexts'
 
 export default function Resistor(props) {
 
   const [id] = useState(Math.random())
+  const { isDragging } = useContext(SandboxContext)
 
   const colors = {svag: ["red", "red", "#8B4513"], medel: ["#8B4513", "#000000", "red"], stark: ["#8B4513", "#000000", "#FF8C00"]}
 
@@ -37,11 +39,24 @@ export default function Resistor(props) {
         <View style={[styles.resistorCornerTipRight, {backgroundColor: color[2]}]}></View>
       </View>
       <View style={[styles.resistorCenter, {backgroundColor: color[1]}]}></View>
+      {!props.disabled && isDragging && <>
+        <View style={[styles.dropCircle, {left: 5}]}></View>
+        <View style={[styles.dropCircle, {right: 5}]}></View>
+      </>}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  dropCircle: {
+    height: 25,
+    width: 25,
+    borderRadius : 12.5,
+    borderStyle: 'dashed',
+    borderWidth: 1, 
+    borderColor: '#ffffffcc',
+    position: 'absolute',
+  },
   resistor: {
     width: 90,
     height: 34,
@@ -50,6 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: 'black',
+    justifyContent: 'center',
   },
   resistorCornerLeft: {
     width: 30,

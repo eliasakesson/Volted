@@ -53,7 +53,7 @@ export default function DragComponent(props) {
   const onLayout = (e) => {
     if (!hasLayouted) {
       setViewSize({width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height})
-      props.onDragEnd({x1: e.nativeEvent.layout.x, y1: e.nativeEvent.layout.y, x2: e.nativeEvent.layout.x + e.nativeEvent.layout.width - 40, y2: e.nativeEvent.layout.y})
+      if (props.onDragEnd) props.onDragEnd({x1: e.nativeEvent.layout.x, y1: e.nativeEvent.layout.y, x2: e.nativeEvent.layout.x + e.nativeEvent.layout.width - 40, y2: e.nativeEvent.layout.y})
       setHasLayouted(true)
     }
   }
@@ -63,7 +63,7 @@ export default function DragComponent(props) {
 
   return (
     <PanGestureHandler onGestureEvent={drag}>
-      <Animated.View style={{left: position.x, top: position.y, position: "absolute", zIndex: (props.zIndex || 0)}} onLayout={onLayout}>
+      <Animated.View style={{left: position?.x, top: position?.y, position: "absolute", zIndex: (props.zIndex || 0)}} onLayout={onLayout}>
         {props.children}
       </Animated.View>
     </PanGestureHandler>

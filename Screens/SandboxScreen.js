@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Button, Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { colors } from '../colors';
 import { useWindowDimensions } from 'react-native';
 import SideMenu from '@chakrahq/react-native-side-menu';
 import BottomSheet from '@gorhom/bottom-sheet';
+import { SandboxContext } from '../components/contexts';
 
 import CreateComponent from '../components/CreateComponent';
 import DragComponent from '../components/DragComponent';
@@ -12,7 +13,6 @@ import Battery from '../components/electronics/Battery';
 import Resistor from '../components/electronics/Resistor';
 import Wire from '../components/electronics/Wire';
 import Lamp from '../components/electronics/Lamp';
-import MPMC from '../MPMC';
 import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs([
@@ -33,127 +33,6 @@ export default function SandboxScreen({ route, navigation }) {
 
   const snapPoints = useMemo(() => ['15%', '50%'], []);
   const { width, height } = useWindowDimensions();
-
-  const onDragEnd = (position, index) => {
-    setIsDragging(false)
-
-    let newComponents = [...components]
-
-    const {x1, y1, x2, y2} = position
-
-    if (newComponents[index].x1 == x1 && newComponents[index].y1 == y1 && newComponents[index].x2 == x2 && newComponents[index].y2 == y2) return
-
-    // Set the new position of the component
-    newComponents[index].x1 = x1
-    newComponents[index].y1 = y1
-    newComponents[index].x2 = x2
-    newComponents[index].y2 = y2
-
-    // Check if component is over trashcan, if so, delete it
-    newComponents = checkForDeletion(newComponents, index)
-    if (!newComponents) return
-
-    newComponents = checkConnection(newComponents, index)
-
-    console.log(newComponents)
-    setComponents(newComponents)
-  }
-
-  const checkForDeletion = (components, index) => {
-    const component = components[index]
-    const {x1, y1, x2, y2} = component
-
-    // If component is dropped inside trashcan, remove it from the components array
-    if (x1 > width - 150 && y1 > height - 200 || x2 > width - 200 && y2 > height - 200){
-      if (component.type === 'wire') {
-        components.forEach(element => {
-          if (element.channel1 === component.channel1) element.channel1 = null
-          if (element.channel2 === component.channel1) element.channel2 = null
-          if (element.channel1 === component.channel2) element.channel1 = null
-          if (element.channel2 === component.channel2) element.channel2 = null
-        });
-      }
-
-      components.splice(index, 1)
-
-      setComponents(components)
-      return null
-    }
-
-    return components
-  }
-
-  const resetComponentChannels = (component, dragComponent) => {
-    if (component.channel1 === dragComponent.channel1) {
-      component.channel1 = null;
-    }
-    if (component.channel2 === dragComponent.channel1) {
-      component.channel2 = null;
-    }
-    if (component.channel1 === dragComponent.channel2) {
-      component.channel1 = null;
-    }
-    if (component.channel2 === dragComponent.channel2) {
-      component.channel2 = null;
-    }
-  };
-  
-  const connectComponentToWire = (component, wire) => {
-    const { x1, y1, x2, y2 } = wire;
-    if (x1 === component.x1 && y1 === component.y1) {
-      component.channel1 = wire.channel1;
-    }
-    if (x1 === component.x2 && y1 === component.y2) {
-      component.channel2 = wire.channel1;
-    }
-    if (x2 === component.x1 && y2 === component.y1) {
-      component.channel1 = wire.channel2;
-    }
-    if (x2 === component.x2 && y2 === component.y2) {
-      component.channel2 = wire.channel2;
-    }
-  };
-  
-  const connectWireToComponent = (wire, component) => {
-    const { x1, y1, x2, y2 } = wire;
-    if (x1 === component.x1 && y1 === component.y1) {
-      component.channel1 = wire.channel1;
-    }
-    if (x1 === component.x2 && y1 === component.y2) {
-      component.channel2 = wire.channel1;
-    }
-    if (x2 === component.x1 && y2 === component.y1) {
-      component.channel1 = wire.channel2;
-    }
-    if (x2 === component.x2 && y2 === component.y2) {
-      component.channel2 = wire.channel2;
-    }
-  };
-  
-  const checkConnection = (components, index) => {
-    const dragComponent = components[index];
-  
-    if (dragComponent.type === "wire") {
-      components.forEach((component) => {
-        if (component.type !== "wire") {
-          resetComponentChannels(component, dragComponent);
-          connectComponentToWire(component, dragComponent);
-        }
-      });
-    } else {
-      dragComponent.channel1 = null;
-      dragComponent.channel2 = null;
-  
-      components.forEach((component) => {
-        if (component.type === "wire") {
-          connectWireToComponent(component, dragComponent);
-        }
-      });
-    }
-  
-    components[index] = dragComponent;
-    return components;
-  };
 
   useEffect(() => {
     if (data) navigation.setOptions({ title: data.title })
@@ -184,12 +63,12 @@ export default function SandboxScreen({ route, navigation }) {
   }, [components])
 
   const libraryComponents = [
-    {component: <Wire />, libraryComponent: <Wire disabled />, type: "wire", name: "Sladd"},
-    {component: <Battery />, type: "", name: "Batteri"},
-    {component: <Resistor strength={"SVAG"} />, type: "", name: "Resistor Svag"},
-    {component: <Resistor strength={"MEDEL"} />, type: "", name: "Resistor Medel"},
-    {component: <Resistor strength={"STARK"} />, type: "", name: "Resistor Stark"},
-    {component: <Lamp />, type: "", name: "Lampa"},
+    {component: <Wire />, name: "Sladd"},
+    {component: <Battery />, name: "Batteri"},
+    {component: <Resistor strength={"SVAG"} />, name: "Resistor Svag"},
+    {component: <Resistor strength={"MEDEL"} />, name: "Resistor Medel"},
+    {component: <Resistor strength={"STARK"} />, name: "Resistor Stark"},
+    {component: <Lamp />, name: "Lampa"},
   ]
 
   const menu = (
@@ -206,7 +85,7 @@ export default function SandboxScreen({ route, navigation }) {
   )
 
   return (
-    <>
+    <SandboxContext.Provider value={{isDragging}}>
       <SideMenu menu={menu} isOpen={sidebarOpen} onChange={(open) => setSidebarOpen(open)} menuPosition="right">
         <View style={styles.container}>
           <ImageBackground resizeMode='repeat' source={require('../assets/dots.png')} style={[styles.backgroundImage, {width: width - 50, height: height - (height > width ? 150 : 75)}]} />
@@ -214,12 +93,12 @@ export default function SandboxScreen({ route, navigation }) {
             <Ionicons name="trash-outline" size={40} color={colors.bg}  />
           </TouchableOpacity>
           {components.map((component, index) => {
-            if (component.type === "wire"){
-              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => onDragEnd(e, index), startY : 75 + index * 50, channel1: component.channel1, channel2: component.channel2})
+            if (component.name === "Sladd"){
+              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height), startY : 75 + index * 50, channel1: component.channel1, channel2: component.channel2})
             }
 
             return (
-              <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => onDragEnd(e, index)} startY={75 + index * 50}>
+              <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height)} startY={75 + index * 50}>
                 {React.cloneElement(component.component, {channel1: component.channel1, channel2: component.channel2})}
               </DragComponent>
             )
@@ -255,8 +134,151 @@ export default function SandboxScreen({ route, navigation }) {
         </View>
       </BottomSheet>
       }
-    </>
+    </SandboxContext.Provider>
   );
+}
+
+const HandleComponentDragEnd = (position, index, components, setComponents, setIsDragging, width, height) => {
+  const componentHasntMoved = (component, position) => {
+    return component.x1 === position.x1 && component.y1 === position.y1 && component.x2 === position.x2 && component.y2 === position.y2
+  }
+
+  const assignPosition = (component, position) => {
+    component.x1 = position.x1
+    component.y1 = position.y1
+    component.x2 = position.x2
+    component.y2 = position.y2
+
+    return component
+  }
+
+  const checkForDeletion = (components, index) => {
+    const dragComponent = components[index]
+    const {x1, y1, x2, y2} = dragComponent
+
+    // If component is dropped inside trashcan, remove it from the components array
+    if (x1 > width - 150 && y1 > height - 200 || x2 > width - 200 && y2 > height - 200){
+      if (dragComponent.name === 'Sladd') {
+        components.forEach((component, i) => {
+          components[i] = resetComponentChannels(component, dragComponent)
+        });
+      }
+
+      components.splice(index, 1)
+
+      setComponents(components)
+      return null
+    }
+
+    return components
+  }
+
+  const resetComponentChannels = (component, dragComponent) => {
+    if (component.channel1 === dragComponent.channel1) {
+      component.channel1 = null;
+    }
+    if (component.channel2 === dragComponent.channel1) {
+      component.channel2 = null;
+    }
+    if (component.channel1 === dragComponent.channel2) {
+      component.channel1 = null;
+    }
+    if (component.channel2 === dragComponent.channel2) {
+      component.channel2 = null;
+    }
+
+    return component
+  };
+  
+  const connectWireToComponent = (wire, component) => {
+    const { x1, y1, x2, y2 } = wire;
+    if (x1 === component.x1 && y1 === component.y1) {
+      component.channel1 = wire.channel1;
+    }
+    if (x1 === component.x2 && y1 === component.y2) {
+      component.channel2 = wire.channel1;
+    }
+    if (x2 === component.x1 && y2 === component.y1) {
+      component.channel1 = wire.channel2;
+    }
+    if (x2 === component.x2 && y2 === component.y2) {
+      component.channel2 = wire.channel2;
+    }
+
+    return component
+  };
+  
+  const checkConnection = (components, index) => {
+    const dragComponent = components[index]
+    const {x1, y1, x2, y2} = dragComponent
+
+    if (dragComponent.name === 'Sladd'){
+
+      // Check if wire is connected to component
+      components.forEach((component, i) => {
+        if (component.name !== 'Sladd'){
+          // Reset channels
+          components[i] = resetComponentChannels(component, dragComponent)
+
+          components[i] = connectWireToComponent(dragComponent, component)
+        }
+      })
+    } else {
+      dragComponent.channel1 = null
+      dragComponent.channel2 = null
+
+      // Check if component is connected to wire
+      components.forEach((component, i) => {
+        
+        if (component.name === 'Sladd'){
+          // Wires x1 and y1 connected to components x1 and y1
+          // Components channel 1 should be wires channel 1
+          if (x1 === component.x1 && y1 === component.y1){
+            dragComponent.channel1 = components[i].channel1
+          }
+          // Wires x1 and y1 connected to components x2 and y2
+          // Components channel 2 should be wires channel 1
+          if (x1 === component.x2 && y1 === component.y2){
+            dragComponent.channel2 = components[i].channel1
+          }
+          // Wires x2 and y2 connected to components x1 and y1
+          // Components channel 1 should be wires channel 2
+          if (x2 === component.x1 && y2 === component.y1){
+            dragComponent.channel1 = components[i].channel2
+          }
+          // Wires x2 and y2 connected to components x2 and y2
+          // Components channel 2 should be wires channel 2
+          if (x2 === component.x2 && y2 === component.y2){
+            dragComponent.channel2 = components[i].channel2
+          }
+        }
+      })
+    }
+
+    components[index] = dragComponent
+
+    return components
+  };
+
+  setIsDragging(false)
+  console.log('drag end')
+    
+  let newComponents = [...components]
+
+  if (componentHasntMoved(newComponents[index], position)) return
+  console.log('component has moved')
+
+  newComponents[index] = assignPosition(newComponents[index], position)
+
+  // Check if component is over trashcan, if so, delete it
+  newComponents = checkForDeletion(newComponents, index)
+  if (!newComponents) return
+
+  newComponents = checkConnection(newComponents, index)
+  if (!newComponents) return
+
+  setComponents(newComponents)
+  console.log('new components', newComponents)
 }
 
 const styles = StyleSheet.create({
