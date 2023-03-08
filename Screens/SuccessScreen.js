@@ -13,10 +13,10 @@ export default function SuccessScreen({ route, navigation }) {
   const complete = () => {
     if (data){
       // Get tutorial data
-      if (getTutorialData(data.id)){
-        navigation.replace("HomeTab")
-        return
-      }
+      // if (getTutorialData(data.id)){
+      //   navigation.replace("HomeTab")
+      //   return
+      // }
 
       console.log(data.difficulty)
       // Add medal
@@ -25,8 +25,8 @@ export default function SuccessScreen({ route, navigation }) {
       // Add as completed
       addTutorialData(data.id)
 
-      // Add to list of completed tutorials
-      addToCompletedTutorials(data.id)
+      // Add to list of completed projects
+      addToCompletedProjects(data.id)
     }
 
     navigation.replace("HomeTab")
@@ -70,16 +70,12 @@ export default function SuccessScreen({ route, navigation }) {
     }
   }
 
-  const addToCompletedTutorials = async (data) => {
+  const addToCompletedProjects = async (data) => {
     try {
-      const completedTutorials = await AsyncStorage.getItem("completed-tutorials")
-      if (completedTutorials){
-        const completedTutorialsArray = JSON.parse(completedTutorials)
-        completedTutorialsArray.push({title: data.title, id: data.id, difficulty: data.difficulty})
-        await AsyncStorage.setItem("completed-tutorials", JSON.stringify(completedTutorialsArray))
-      } else {
-        await AsyncStorage.setItem("completed-tutorials", JSON.stringify([{title: data.title, id: data.id, difficulty: data.difficulty}]))
-      }
+      const completedProjects = await AsyncStorage.getItem("completed-projects")
+      const completedProjectsArray = completedProjects ? JSON.parse(completedProjects) : []
+      completedProjectsArray.push({title: data.title, id: data.id, difficulty: data.difficulty})
+      await AsyncStorage.setItem("completed-projects", JSON.stringify(completedProjectsArray))
     } catch (e) {
       console.log(e)
     }

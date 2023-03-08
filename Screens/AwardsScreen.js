@@ -8,9 +8,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function AwardsScreen({ navigation }) {
 
     const [medals, setMedals] = useState({ gold: 0, silver: 0, bronze: 0 })
+    const [completedTutorials, setCompletedTutorials] = useState([])
 
     useEffect(() => {
         getMedals()
+        getCompletedTutorials()
     }, [navigation])
 
     const getMedals = async () => {
@@ -19,6 +21,16 @@ export default function AwardsScreen({ navigation }) {
             const medalsSilver = await AsyncStorage.getItem('medals-silver')
             const medalsBronze = await AsyncStorage.getItem('medals-bronze')
             setMedals({ gold: medalsGold || 0, silver: medalsSilver || 0, bronze: medalsBronze || 0 })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const getCompletedTutorials = async () => {
+        try {
+            const data = await AsyncStorage.getItem('completed-projects')
+            console.log(data)
+            setCompletedTutorials(data ? JSON.parse(data) : [])
         } catch (e) {
             console.log(e)
         }
@@ -49,6 +61,16 @@ export default function AwardsScreen({ navigation }) {
         </View>
         <View style={styles.wrapper}>
             <Text style={styles.header}>Senaste medaljer</Text>
+            <View>
+                {completedTutorials.map((tutorial, index) => {
+                    return (
+                        <View key={index} style={styles.tutorial}>
+                            <Text style={styles.tutorialTitle}>{tutorial.title}</Text>
+                            <Text style={styles.tutorialDescription}>{tutorial.description}</Text>
+                        </View>
+                    )
+                })}
+            </View>
         </View>
     </ScrollView>
   )
