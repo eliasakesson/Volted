@@ -59,7 +59,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{headerTintColor: colors.header, headerBackTitleVisible: false, headerLeftContainerStyle: {paddingLeft: 10}}}>
         <Stack.Screen name="Splash" component={SplashScreen} options={{headerShown: false, animation: "fade"}} />
         <Stack.Screen name="HomeTab" component={HomeTabs} options={{headerShown: false, animation: "fade_from_bottom"}} />
-        <Stack.Screen name="Sandbox" component={SandboxScreen} options={{title: "Sandlådsläge", gestureEnabled: false}} />
+        <Stack.Screen name="Sandbox" component={SandboxScreen} options={{title: "Sandlådsläge", gestureEnabled: false, orientation: "all"}} />
         <Stack.Screen name="Tutorial" component={TutorialScreen} options={{title: "Lektion"}} />
         <Stack.Screen name="Success" component={SuccessScreen} options={{title: "Grattis!", gestureEnabled: false}} />
         <Stack.Screen name="Test" component={Test} options={{title: "Test", gestureEnabled: false}} />

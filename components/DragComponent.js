@@ -25,8 +25,8 @@ export default function DragComponent(props) {
       let x = e.absoluteX + ctx.offsetX
       let y = e.absoluteY + ctx.offsetY
 
-      x = Math.max(margin, Math.min(x, screenWidth - margin - viewSize.width))
-      y = Math.max(margin, Math.min(y, screenHeight - margin * 3 - viewSize.height - headerHeight))
+      // x = Math.max(margin, Math.min(x, screenWidth - margin - viewSize.width))
+      // y = Math.max(margin, Math.min(y, screenHeight - margin * 3 - viewSize.height - headerHeight))
 
       runOnJS(setPosition)({x, y})
 
@@ -38,11 +38,11 @@ export default function DragComponent(props) {
       let x = e.absoluteX + ctx.offsetX
       let y = e.absoluteY + ctx.offsetY
 
-      x = Math.round((x + margin) / gridSize) * gridSize - margin
-      y = Math.round((y + margin) / gridSize) * gridSize - margin
+      // x = Math.max(margin, Math.min(x, screenWidth - margin - viewSize.width))
+      // y = Math.max(margin, Math.min(y, screenHeight - margin * 3 - viewSize.height - headerHeight))
       
-      x = Math.max(margin, Math.min(x, screenWidth - margin - viewSize.width))
-      y = Math.max(margin, Math.min(y, screenHeight - margin * 3 - viewSize.height - headerHeight))
+      x = Math.round((x + margin) / gridSize) * gridSize - margin
+      y = Math.round((y + margin) / gridSize) * gridSize - margin  
 
       runOnJS(setPosition)({x, y})
       

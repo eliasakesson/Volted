@@ -4,7 +4,7 @@ import { SandboxContext } from '../contexts'
 
 export default function Resistor(props) {
 
-  const [id] = useState(Math.random())
+  const [id] = useState(Number((Math.random()).toFixed(6) * 1e6))
   const { isDragging } = useContext(SandboxContext)
 
   const colors = {svag: ["red", "red", "#8B4513"], medel: ["#8B4513", "#000000", "red"], stark: ["#8B4513", "#000000", "#FF8C00"]}
@@ -16,16 +16,16 @@ export default function Resistor(props) {
     const { channel1, channel2 } = props
 
     channel1?.subscribe({callback: (message) => {
-        if (message.sender !== id) {
+        if (message.sender.indexOf(id) === -1) {
           const { volt } = message
-          channel2?.send({...message, sender: id, volt: volt * resistance})
+          channel2?.send({...message, sender: [...message.sender, id], volt: volt * resistance})
         }
     }, subscriber: id})
 
     channel2?.subscribe({callback: (message) => {
-        if (message.sender !== id) {
+        if (message.sender.indexOf(id) === -1) {
           const { volt } = message
-          channel1?.send({...message, sender: id, volt: volt * resistance})
+          channel1?.send({...message, sender: [...message.sender, id], volt: volt * resistance})
         }
     }, subscriber: id})
   }, [props.channel1, props.channel2])
