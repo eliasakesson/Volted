@@ -14,6 +14,7 @@ import Resistor from '../components/electronics/Resistor';
 import Wire from '../components/electronics/Wire';
 import Lamp from '../components/electronics/Lamp';
 import { LogBox } from 'react-native';
+import SandboxProject from '../components/SandboxProject';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -29,9 +30,7 @@ export default function SandboxScreen({ route, navigation }) {
   const [isDragging, setIsDragging] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [tooltipOpen, setTooltipOpen] = useState(true)
-  const [currentStep, setCurrentStep] = useState(0)
 
-  const snapPoints = useMemo(() => ['15%', '50%'], []);
   const { width, height } = useWindowDimensions();
 
   useEffect(() => {
@@ -50,8 +49,6 @@ export default function SandboxScreen({ route, navigation }) {
 
       setComponentsToCreate(componentNames)
     }
-
-    setCurrentStep(0)
   }, [navigation])
 
   useEffect(() => {
@@ -111,29 +108,7 @@ export default function SandboxScreen({ route, navigation }) {
         <Text style={styles.tooltipText} >Klicka här för att lägga till komponenter</Text>
         <Button color="#fff" title='Okej' onPress={() => setTooltipOpen(false)} />
       </View>
-      {data &&
-      <BottomSheet snapPoints={snapPoints} backgroundStyle={styles.tutorialBackground}>
-        <View style={styles.tutorial}>
-          <Text style={styles.tutorialHeader}>{data.title}</Text>
-          <Text style={styles.tutorialText}>{data.steps[currentStep]}</Text>
-          <View style={styles.tutorialSteps}>
-            {currentStep > 0 &&
-              <TouchableOpacity onPress={() => setCurrentStep(step => Math.max(step - 1, 0))} style={[styles.tutorialButton, {marginLeft: 0, flex: 0, marginRight: 25}]}>
-                <AntDesign name="caretleft" size={18} color="white" />
-              </TouchableOpacity>
-            }
-            {currentStep < data.steps.length - 1 ?
-              <TouchableOpacity onPress={() => setCurrentStep(step => Math.min(step + 1, data.steps.length - 1))} style={styles.tutorialButton}>
-                <Text style={styles.tutorialButtonText}>Nästa Steg</Text>
-              </TouchableOpacity> :
-              <TouchableOpacity onPress={() => navigation.navigate("Success", { data })} style={styles.tutorialButton}>
-                <Text style={styles.tutorialButtonText}>Testa koppling</Text>
-              </TouchableOpacity>
-            }
-          </View>
-        </View>
-      </BottomSheet>
-      }
+      <SandboxProject data={data} />
     </SandboxContext.Provider>
   );
 }
@@ -324,54 +299,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-
-  // Tutorial
-  tutorial: {
-    paddingHorizontal: 30,
-    paddingVertical: 20,
-    height: "100%"
-  },
-  tutorialBackground: {
-    backgroundColor: colors.card,
-  },
-  tutorialHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 25,
-    color: colors.header,
-  },
-  tutorialText: {
-    fontSize: 16,
-    marginBottom: 20,
-    color: colors.text,
-  },
-  tutorialSteps: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: "auto",
-    paddingBottom: 25,
-  },
-  tutorialStep: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginLeft: 10,
-  },
-  tutorialButton: {
-    borderRadius: 10,
-    backgroundColor: colors.primary,
-    padding: 16,
-    alignItems: 'center',
-    marginLeft: "auto",
-    flex: 1,
-  },
-  tutorialButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-
   // Tooltip
   tooltip: {
     position: 'absolute',
