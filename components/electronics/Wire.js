@@ -5,21 +5,21 @@ import { Svg, Line } from 'react-native-svg'
 
 export default function Wire(props) {
 
-    const [id] = useState(Math.random())
+    const [id] = useState(Number((Math.random()).toFixed(6) * 1e6))
 
     useEffect(() => {
         const { channel1, channel2 } = props
 
         console.log("Wire: ", channel1, channel2)
         channel1?.subscribe({callback: (message) => {
-            if (message.sender !== id) {
-                channel2?.send({...message, sender: id})
+            if (message.sender.indexOf(id) === -1) {
+                channel2?.send({...message, sender: [...message.sender, id]})
             }
         }, subscriber: id})
 
         channel2?.subscribe({callback: (message) => {
-            if (message.sender !== id) {
-                channel1?.send({...message, sender: id})
+            if (message.sender.indexOf(id) === -1) {
+                channel1?.send({...message, sender: [...message.sender, id]})
             }
         }, subscriber: id})
     }, [props.channel1, props.channel2])

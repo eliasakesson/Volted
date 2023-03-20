@@ -91,11 +91,11 @@ export default function SandboxScreen({ route, navigation }) {
           </TouchableOpacity>
           {components.map((component, index) => {
             if (component.name === "Sladd"){
-              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height), startY : 75 + index * 50, channel1: component.channel1, channel2: component.channel2})
+              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height), startY : 75, channel1: component.channel1, channel2: component.channel2})
             }
 
             return (
-              <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height)} startY={75 + index * 50}>
+              <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height)} startY={75}>
                 {React.cloneElement(component.component, {channel1: component.channel1, channel2: component.channel2})}
               </DragComponent>
             )
@@ -128,22 +128,22 @@ const HandleComponentDragEnd = (position, index, components, setComponents, setI
   }
 
   const checkForDeletion = (components, index) => {
-    const dragComponent = components[index]
-    const {x1, y1, x2, y2} = dragComponent
+    // const dragComponent = components[index]
+    // const {x1, y1, x2, y2} = dragComponent
 
-    // If component is dropped inside trashcan, remove it from the components array
-    if (x1 > width - 150 && y1 > height - 200 || x2 > width - 200 && y2 > height - 200){
-      if (dragComponent.name === 'Sladd') {
-        components.forEach((component, i) => {
-          components[i] = resetComponentChannels(component, dragComponent)
-        });
-      }
+    // // If component is dropped inside trashcan, remove it from the components array
+    // if (x1 > width - 150 && y1 > height - 200 || x2 > width - 200 && y2 > height - 200){
+    //   if (dragComponent.name === 'Sladd') {
+    //     components.forEach((component, i) => {
+    //       components[i] = resetComponentChannels(component, dragComponent)
+    //     });
+    //   }
 
-      components.splice(index, 1)
+    //   components.splice(index, 1)
 
-      setComponents(components)
-      return null
-    }
+    //   setComponents(components)
+    //   return null
+    // }
 
     return components
   }
@@ -195,7 +195,28 @@ const HandleComponentDragEnd = (position, index, components, setComponents, setI
           // Reset channels
           components[i] = resetComponentChannels(component, dragComponent)
 
-          components[i] = connectWireToComponent(dragComponent, component)
+          // components[i] = connectWireToComponent(dragComponent, component)
+
+          // Wires x1 and y1 connected to components x1 and y1
+          // Components channel 1 should be wires channel 1
+          if (x1 === component.x1 && y1 === component.y1){
+            components[i].channel1 = dragComponent.channel1
+          }
+          // Wires x1 and y1 connected to components x2 and y2
+          // Components channel 2 should be wires channel 1
+          if (x1 === component.x2 && y1 === component.y2){
+            components[i].channel2 = dragComponent.channel1
+          }
+          // Wires x2 and y2 connected to components x1 and y1
+          // Components channel 1 should be wires channel 2
+          if (x2 === component.x1 && y2 === component.y1){
+            components[i].channel1 = dragComponent.channel2
+          }
+          // Wires x2 and y2 connected to components x2 and y2
+          // Components channel 2 should be wires channel 2
+          if (x2 === component.x2 && y2 === component.y2){
+            components[i].channel2 = dragComponent.channel2
+          }
         }
       })
     } else {
@@ -236,12 +257,10 @@ const HandleComponentDragEnd = (position, index, components, setComponents, setI
   };
 
   setIsDragging(false)
-  console.log('drag end')
     
   let newComponents = [...components]
 
   if (componentHasntMoved(newComponents[index], position)) return
-  console.log('component has moved')
 
   newComponents[index] = assignPosition(newComponents[index], position)
 

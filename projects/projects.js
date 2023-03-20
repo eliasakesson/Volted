@@ -20,8 +20,6 @@ export const projects = [
         startItems: [
             "Batteri",
             "Lampa",
-            "Resistor Svag",
-            "Sladd",
             "Sladd",
             "Sladd"
         ]
@@ -35,25 +33,31 @@ export const projects = [
         difficulty: 0,
         icon: <Entypo name="light-up" size={30} color="#fff" />,
         steps: [
-            "Koppla en kabel från batteriet till lampan.",
-            "Koppla en kabel från lampan till resistorn.",
-            "Koppla en kabel från resistorn till batteriet."
+            "Koppla ihop batteriet med lampan.",
+            "Lägg ut en svag resistor och en sladd",
+            "Koppla in resistorn mellan lampan och batteriet.",
+        ],
+        startItems: [
+            "Batteri",
+            "Lampa",
+            "Sladd",
+            "Sladd",
         ]
     },
-    {
-        screen: null,
-        title: "Lampa med knapp",
-        description: "Använd en lampa, ett batteri och en knapp för att få lampan att lysa.",
-        id: "p57634",
-        popular: true,
-        difficulty: 0,
-        icon: <Entypo name="light-up" size={30} color="#fff" />,
-        steps: [
-            "Koppla en kabel från batteriet till lampan.",
-            "Koppla en kabel från lampan till resistorn.",
-            "Koppla en kabel från resistorn till batteriet."
-        ]
-    },
+    // {
+    //     screen: null,
+    //     title: "Lampa med knapp",
+    //     description: "Använd en lampa, ett batteri och en knapp för att få lampan att lysa.",
+    //     id: "p57634",
+    //     popular: true,
+    //     difficulty: 0,
+    //     icon: <Entypo name="light-up" size={30} color="#fff" />,
+    //     steps: [
+    //         "Koppla en kabel från batteriet till lampan.",
+    //         "Koppla en kabel från lampan till resistorn.",
+    //         "Koppla en kabel från resistorn till batteriet."
+    //     ]
+    // },
 ]
 
 export const difficulties = ["Enkel", "Mellan", "Svår"]

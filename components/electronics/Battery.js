@@ -1,12 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { SandboxContext } from '../contexts'
 
 export default function Battery(props) {
 
-    const [id] = useState(Math.random())
+    const [id] = useState(Number((Math.random()).toFixed(6) * 1e6))
     const { isDragging } = useContext(SandboxContext)
     const [circuitClosed, setCircuitClosed] = useState(false)
+    const circuitClosedRef = useRef(circuitClosed)
+    const timeoutRef = useRef();
 
     useEffect(() => {
         if (props.disabled) return
@@ -14,31 +16,36 @@ export default function Battery(props) {
         const { channel1, channel2 } = props
 
         channel1?.subscribe({callback: (message) => {
-            if (message.sender !== id) {
-                console.log("Battery: ", message, circuitClosed)
-                if (message.test) {
-                    setCircuitClosed(true)
-                }
+            console.log("Battery: ", message, circuitClosedRef.current)
+            if (message.volt === 0 && !circuitClosedRef.current) {
+                setCircuitClosed(true)
             }
+
+            // If no signal is received for 600ms, the circuit is considered closed
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = setTimeout(() => {
+                setCircuitClosed(false);
+                // Clear interval ID reference
+                timeoutRef.current = undefined;
+            }, 600);
         }, subscriber: id})
 
         const interval = setInterval(() => {
-            if (circuitClosed) {
-                channel2?.send({volt: 1, sender: id})
-            }
-        }, 500)
-
-        const testerInterval = setInterval(() => {
-            if (!circuitClosed) {
-                channel2?.send({test: true, sender: id})
+            if (circuitClosedRef.current) {
+                channel2?.send({volt: 1, sender: [id]})
+            } else {
+                channel2?.send({volt: 0, sender: [id]})
             }
         }, 500)
 
         return () => {
             clearInterval(interval)
-            clearInterval(testerInterval) 
         }
     }, [props.channel1, props.channel2])
+
+    useEffect(() => {
+        circuitClosedRef.current = circuitClosed
+    }, [circuitClosed])
 
   return (
     <View style={styles.battery}>

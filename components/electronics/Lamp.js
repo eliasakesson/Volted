@@ -4,25 +4,25 @@ import { SandboxContext } from '../contexts'
 
 export default function Lamp(props) {
 
-    const [id] = useState(Math.random())
+    const [id] = useState(Number((Math.random()).toFixed(6) * 1e6))
     const { isDragging } = useContext(SandboxContext)
 
-    const [lightActive, setLightActive] = useState(false)
+    const [lightStrength, setLightStrength] = useState(0)
     const timeoutRef = useRef();
 
     useEffect(() => {
         const { channel1, channel2 } = props
 
         channel1?.subscribe({callback: (message) => {
-            if (message.sender !== id) {
+            if (message.sender.indexOf(id) === -1) {
                 console.log("Lamp: ", message)
-                channel2?.send({...message, sender: id})
+                channel1?.send({...message, sender: [...message.sender, id]})
 
                 if (message.volt > 0){
-                    setLightActive(true);
+                    setLightStrength(message.volt)
                     clearTimeout(timeoutRef.current);
                     timeoutRef.current = setTimeout(() => {
-                        setLightActive(false);
+                        setLightStrength(0);
                         // Clear interval ID reference
                         timeoutRef.current = undefined;
                     }, 600);
@@ -31,15 +31,15 @@ export default function Lamp(props) {
         }, subscriber: id})
 
         channel2?.subscribe({callback: (message) => {
-            if (message.sender !== id) {
+            if (message.sender.indexOf(id) === -1) {
                 console.log("Lamp: ", message)
-                channel1?.send({...message, sender: id})
+                channel1?.send({...message, sender: [...message.sender, id]})
 
                 if (message.volt > 0){
-                    setLightActive(true);
+                    setLightStrength(message.volt)
                     clearTimeout(timeoutRef.current);
                     timeoutRef.current = setTimeout(() => {
-                        setLightActive(false);
+                        setLightStrength(0);
                         // Clear interval ID reference
                         timeoutRef.current = undefined;
                     }, 600);
@@ -50,21 +50,18 @@ export default function Lamp(props) {
         return () => {
             channel1?.unsubscribe(id)
             channel2?.unsubscribe(id)
-        }
-    }, [props.channel1, props.channel2])
 
-    useEffect(() => {
-        return () => {
             clearInterval(timeoutRef.current);
             timeoutRef.current = undefined;
-          };
-    }, [])
+            setLightStrength(0);
+        }
+    }, [props.channel1, props.channel2])
 
   return (
     <View style={styles.lampBase}>
         <View style={[styles.baseSide, {borderBottomRightRadius: 0}]}></View>
         <View style={styles.baseCenter}>
-            <View style={[styles.lamp, {backgroundColor: lightActive ? "#ffff0075" : "rgba(155, 155, 155, 0.25)"}]}>
+            <View style={[styles.lamp, {backgroundColor: `rgba(255, 255, 0, ${lightStrength})`}]}>
                 <View style={styles.lampCenter}></View>
             </View>
         </View>
