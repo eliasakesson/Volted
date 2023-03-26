@@ -18,6 +18,8 @@ export default function TEnkelLampa({ styles, ChoiceComponent, toNextScreen }) {
       <Text style={styles.text}>Att sätta en knapp i kretsen är som att sätta en stoppskylt i kretsen. Tänk dig nu att elektriciteten måste stanna för stoppskylten. Det blir snabbt kö och ingen elektricitet i hela kretsen kan röra sig. Överallt i kretsen, oavsett om det är efter eller innan stoppskylten/knappen, är elektriciteten stilla och ingen elektricitet kan nå lampan. Lampan släcks nu. Om du lyfter på knappen, tar bort stoppskylten, börjar elektriciteten köra igen och lampan kommer lysa.</Text>
       <Text style={styles.text}>När det inte finns någon stoppskylt i kretsen, när all elektricitet kan röra sig, kallas det att kretsen är sluten.</Text>
       <Text style={styles.text}>När det finns en stoppskylt, då all elektricitet står stilla, kallas det att kretsen är öppen.</Text>
+      <Text style={styles.text}>Elektriciteten börjar vandra vid en strömkälla, exempelvis ett batteri eller eluttag. Elektroner börjar vandra från en pluspol (+) till en minuspol (-). Om du har sett ett batteri, har du kanske sett att det finns ett minustecken och ett plustecken. Dessa visar hur man ska sätta batteriet för att electriciteten ska vandra rätt håll. </Text>
+      <Image style={styles.image} source={{uri: "https://4.bp.blogspot.com/-Y-eak4PlG3E/WjlwwibjDbI/AAAAAAAAFp8/rhszO6-4O5kTO-eINQEIB25VF1cpC7LFgCLcBGAs/s1600/DC-circuit.gif"}} />
 
       <Text style={styles.title2}>Redo att sätta kunskapen på prov?</Text>
       <Text style={styles.text}>Klicka på knappen nedan för att gå vidare till följande projekt.</Text>

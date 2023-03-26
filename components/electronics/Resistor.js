@@ -16,18 +16,23 @@ export default function Resistor(props) {
     const { channel1, channel2 } = props
 
     channel1?.subscribe({callback: (message) => {
-        if (message.sender.indexOf(id) === -1) {
+        if (message.sender.indexOf(id) === -1 && channel1 && channel2) {
           const { volt } = message
-          channel2?.send({...message, sender: [...message.sender, id], volt: volt * resistance})
+          channel2.send({...message, sender: [...message.sender, id], volt: volt * resistance})
         }
     }, subscriber: id})
 
     channel2?.subscribe({callback: (message) => {
-        if (message.sender.indexOf(id) === -1) {
+        if (message.sender.indexOf(id) === -1 && channel1 && channel2) {
           const { volt } = message
-          channel1?.send({...message, sender: [...message.sender, id], volt: volt * resistance})
+          channel1.send({...message, sender: [...message.sender, id], volt: volt * resistance})
         }
     }, subscriber: id})
+
+    return () => {
+      channel1?.unsubscribe(id)
+      channel2?.unsubscribe(id)
+    }
   }, [props.channel1, props.channel2])
 
   return (

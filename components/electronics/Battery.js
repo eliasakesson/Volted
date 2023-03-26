@@ -16,30 +16,37 @@ export default function Battery(props) {
         const { channel1, channel2 } = props
 
         channel1?.subscribe({callback: (message) => {
-            console.log("Battery: ", message, circuitClosedRef.current)
-            if (message.volt === 0 && !circuitClosedRef.current) {
-                setCircuitClosed(true)
+            if (channel1 && channel2){
+                console.log("Battery: ", message.sender)
+                if (message.volt === 0 && !circuitClosedRef.current) {
+                    setCircuitClosed(true)
+                }
+    
+                // If no signal is received for 600ms, the circuit is considered closed
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = setTimeout(() => {
+                    setCircuitClosed(false);
+                    // Clear interval ID reference
+                    timeoutRef.current = undefined;
+                }, 600);
             }
-
-            // If no signal is received for 600ms, the circuit is considered closed
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = setTimeout(() => {
-                setCircuitClosed(false);
-                // Clear interval ID reference
-                timeoutRef.current = undefined;
-            }, 600);
         }, subscriber: id})
 
         const interval = setInterval(() => {
-            if (circuitClosedRef.current) {
-                channel2?.send({volt: 1, sender: [id]})
-            } else {
-                channel2?.send({volt: 0, sender: [id]})
+            // if (circuitClosedRef.current) {
+            //     channel2?.send({volt: 1, sender: [id]})
+            // } else {
+            //     channel2?.send({volt: 0, sender: [id]})
+            // }
+            if (channel1 && channel2){
+                channel2.send({volt: 1, sender: [id]})
             }
         }, 500)
 
         return () => {
+            console.log("Battery unmounted")
             clearInterval(interval)
+            // channel1?.unsubscribe(id)
         }
     }, [props.channel1, props.channel2])
 

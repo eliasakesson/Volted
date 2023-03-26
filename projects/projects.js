@@ -1,51 +1,49 @@
 import { Entypo } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { colors } from "../colors";
 
 export const projects = [
     {
-        screen: null,
+        title: "Enkel krets",
+        description: "Låt elektriciteten flöda genom kretsen.",
+        id: "p64353",
+        popular: true,
+        difficulty: 0,
+        icon: <MaterialIcons name="bolt" size={30} color="#fff" />,
+        steps: [
+            "Sätt ut ett batteri och en resistor.",
+            "Sätt ut två sladdar.",
+            "Koppla ihop batteriet och resistorn med sladdarna.",
+        ]
+    },
+    {
         title: "Enkel lampa",
         description: "Använd en lampa och ett batteri för att få lampan att lysa.",
         id: "p86545",
         popular: true,
         difficulty: 0,
-        icon: <Entypo name="light-up" size={30} color="#fff" />,
+        icon: <FontAwesome5 name="lightbulb" size={30} color="#fff" />,
         steps: [
-            "Koppla en kabel från batteriet till lampan.",
-            "Koppla en kabel från lampan till resistorn.",
-            "Koppla en kabel från resistorn till batteriet."
-        ],
-        startItems: [
-            "Batteri",
-            "Lampa",
-            "Sladd",
-            "Sladd"
+            "Sätt ut ett batteri och en lampa.",
+            "Sätt ut två sladdar.",
+            "Koppla ihop batteriet och lampan med sladdarna.",
         ]
     },
     {
-        screen: null,
         title: "Ljusstyrka på lampa",
         description: "Använd en lampa, ett batteri och en svag resistor för att få lampan att lysa.",
-        id: "p86534",
+        id: "p36436",
         popular: true,
-        difficulty: 0,
+        difficulty: 1,
         icon: <Entypo name="light-up" size={30} color="#fff" />,
         steps: [
-            "Koppla ihop batteriet med lampan.",
-            "Lägg ut en svag resistor och en sladd",
-            "Koppla in resistorn mellan lampan och batteriet.",
-        ],
-        startItems: [
-            "Batteri",
-            "Lampa",
-            "Sladd",
-            "Sladd",
+            "Sätt ut ett batteri, en lampa och en resistor.",
+            "Sätt ut tre sladdar.",
+            "Koppla batteriet till resistorn, resistorn till lampan och lampan till batteriet med sladdar.",
         ]
     },
     // {
-    //     screen: null,
     //     title: "Lampa med knapp",
     //     description: "Använd en lampa, ett batteri och en knapp för att få lampan att lysa.",
     //     id: "p57634",
@@ -87,7 +85,7 @@ export const getTimeSince = (date) => {
     return Math.floor(seconds) + " sekunder";
   }
 
-export function projectCard(project, navigation) {
+export function ProjectCard({project, navigation}) {
     return (
         <TouchableOpacity key={project.id} style={styles.project} onPress={() => navigation.navigate("Sandbox", { data: project })}>
             <View style={styles.innerproject}>

@@ -4,7 +4,6 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { colors } from '../colors';
 import { useWindowDimensions } from 'react-native';
 import SideMenu from '@chakrahq/react-native-side-menu';
-import BottomSheet from '@gorhom/bottom-sheet';
 import { SandboxContext } from '../components/contexts';
 
 import CreateComponent from '../components/CreateComponent';
@@ -13,6 +12,7 @@ import Battery from '../components/electronics/Battery';
 import Resistor from '../components/electronics/Resistor';
 import Wire from '../components/electronics/Wire';
 import Lamp from '../components/electronics/Lamp';
+import Switch from '../components/electronics/Switch';
 import { LogBox } from 'react-native';
 import SandboxProject from '../components/SandboxProject';
 
@@ -69,7 +69,7 @@ export default function SandboxScreen({ route, navigation }) {
   ]
 
   const menu = (
-    <View style={styles.menu}>
+    <ScrollView style={styles.menu}>
       <Text style={styles.menuHeader}>Komponenter</Text>
       <View style={styles.library}>
         {libraryComponents.map((component, index) => {
@@ -77,8 +77,10 @@ export default function SandboxScreen({ route, navigation }) {
             <CreateComponent {...component} key={index} setComponents={setComponents} componentsToCreate={componentsToCreate} setComponentsToCreate={setComponentsToCreate} />
           )
         })}
+        <Text style={[styles.menuHeader, {fontStyle: "italic", marginTop: 20}]}>Coming Soon</Text>
+        <CreateComponent component={<Switch />} name="Strömbrytare" disabled={true} />
       </View>
-    </View>
+    </ScrollView>
   )
 
   return (
@@ -86,16 +88,16 @@ export default function SandboxScreen({ route, navigation }) {
       <SideMenu menu={menu} isOpen={sidebarOpen} onChange={(open) => setSidebarOpen(open)} menuPosition="right">
         <View style={styles.container}>
           <ImageBackground resizeMode='repeat' source={require('../assets/dots.png')} style={[styles.backgroundImage, {width: width - 50, height: height - (height > width ? 150 : 75)}]} />
-          <TouchableOpacity style={[styles.trashcan, {opacity: isDragging ? 1 : 0, bottom: data ? 120 : 30}]}>
+          {/* <TouchableOpacity style={[styles.trashcan, {opacity: isDragging ? 1 : 0, bottom: data ? 120 : 30}]}>
             <Ionicons name="trash-outline" size={40} color={colors.bg}  />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {components.map((component, index) => {
             if (component.name === "Sladd"){
-              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height), startY : 75, channel1: component.channel1, channel2: component.channel2})
+              return React.cloneElement(component.component, {key: index, onDragStart: () => setIsDragging(true), onDragEnd: (e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height), startY : 25 + components.length * 50, channel1: component.channel1, channel2: component.channel2})
             }
 
             return (
-              <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height)} startY={75}>
+              <DragComponent key={index} onDragStart={() => setIsDragging(true)} onDragEnd={(e) => HandleComponentDragEnd(e, index, components, setComponents, setIsDragging, width, height)} startY={25 + components.length * 50}>
                 {React.cloneElement(component.component, {channel1: component.channel1, channel2: component.channel2})}
               </DragComponent>
             )
@@ -108,7 +110,7 @@ export default function SandboxScreen({ route, navigation }) {
         <Text style={styles.tooltipText} >Klicka här för att lägga till komponenter</Text>
         <Button color="#fff" title='Okej' onPress={() => setTooltipOpen(false)} />
       </View>
-      <SandboxProject data={data} />
+      <SandboxProject data={data} navigation={navigation} />
     </SandboxContext.Provider>
   );
 }

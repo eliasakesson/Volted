@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors } from "../colors";
 
@@ -14,7 +14,7 @@ export const tutorials = [
         tutorialNumber: 1,
         difficulty: 0,
         length: "5 min",
-        icon: <Feather name="book-open" size={30} color="#fff" />,
+        icon: <MaterialIcons name="electric-bike" size={24} color="#fff" />,
         next: "t43985",
     },
     {
@@ -25,14 +25,14 @@ export const tutorials = [
         tutorialNumber: 2,
         difficulty: 0,
         length: "10 min",
-        icon: <Feather name="book-open" size={30} color="#fff" />,
+        icon: <MaterialCommunityIcons name="electric-switch" size={24} color="#fff" />,
         next: "p86545",
     },
 ]
 
 export const difficulties = ["Enkel", "Mellan", "Svår"]
 
-export function tutorialCard(tutorial, navigation) {
+export function TutorialCard({tutorial, navigation}) {
     return (
         <TouchableOpacity key={tutorial.id} style={styles.tutorial} onPress={() => navigation.navigate("Tutorial", { data: tutorial })}>
             <View style={styles.innerTutorial}>

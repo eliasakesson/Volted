@@ -10,16 +10,17 @@ export default function Wire(props) {
     useEffect(() => {
         const { channel1, channel2 } = props
 
-        console.log("Wire: ", channel1, channel2)
+        if (props.disabled) return
+
         channel1?.subscribe({callback: (message) => {
-            if (message.sender.indexOf(id) === -1) {
-                channel2?.send({...message, sender: [...message.sender, id]})
+            if (message.sender.indexOf(id) === -1 && channel1 && channel2) {
+                channel2.send({...message, sender: [...message.sender, id]})
             }
         }, subscriber: id})
 
         channel2?.subscribe({callback: (message) => {
-            if (message.sender.indexOf(id) === -1) {
-                channel1?.send({...message, sender: [...message.sender, id]})
+            if (message.sender.indexOf(id) === -1 && channel1 && channel2) {
+                channel1.send({...message, sender: [...message.sender, id]})
             }
         }, subscriber: id})
     }, [props.channel1, props.channel2])

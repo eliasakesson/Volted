@@ -3,17 +3,44 @@ import { View, Text, StyleSheet,Animated } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { colors } from '../colors'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function DailyReward() {
 
-    const [show, setShow] = useState(false)
     const [existInDOM, setExistInDOM] = useState(false)
 
     const scale = useRef(new Animated.Value(0)).current
 
     const openReward = () => {
-        setShow(true)
         AsyncStorage.setItem("lastDailyReward", new Date().toString())
+        setExistInDOM(true)
+        addMoney()
+        Animated.timing(scale, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+        }).start()
+    }
+
+    const addMoney = () => {
+        AsyncStorage.getItem("money").then((data) => {
+            if (data) {
+                const money = parseInt(data)
+                AsyncStorage.setItem("money", (money + 100).toString())
+            } else {
+                AsyncStorage.setItem("money", "100")
+            }
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
+
+    const acceptReward = () => {
+        Animated.timing(scale, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true
+        }).start(() => setExistInDOM(false))
     }
 
     useEffect(() => {
@@ -32,56 +59,44 @@ export default function DailyReward() {
         })
     }, [])
 
-    useEffect(() => {
-        if (show) {
-            setExistInDOM(true)
-            Animated.timing(scale, {
-                toValue: 1,
-                duration: 300,
-                useNativeDriver: true,
-            }).start()
-        } else {
-            Animated.timing(scale, {
-                toValue: 0,
-                duration: 300,
-                useNativeDriver: true
-            }).start(() => setExistInDOM(false))
-        }
-    }, [show])
-
     if (!existInDOM) return null
 
   return (
-    <Animated.View style={[styles.container, {transform: [{translateX: -150}, {translateY: -200}, {scale: scale}]}]}>
-        <Text style={styles.title}>Välkommen tillbaka</Text>
-        <Text style={styles.text}>Här är din dagliga belöning, kom tillbaka imorgon för en ny belöning</Text>
-        <Text style={styles.coinsText}><Text style={styles.coins}>+20</Text> poäng</Text>
-        <TouchableOpacity style={styles.button} onPress={() => setShow(false)}>
-            <Text style={styles.buttonText}>Ta emot</Text>
-        </TouchableOpacity>
+    <Animated.View style={[styles.background, {opacity: scale}]}>
+        <Animated.View style={[styles.container, {transform: [{translateX: -150}, {translateY: -200}, {scale: scale}]}]}>
+            <Text style={styles.title}>Välkommen tillbaka</Text>
+            <Text style={styles.text}>Här är din dagliga belöning, kom tillbaka imorgon för en ny belöning</Text>
+            <MaterialIcons style={styles.icon} name="bolt" size={80} color="black" />
+            <Text style={styles.coinsText}><Text style={styles.coins}>+100</Text> blixtar</Text>
+            <TouchableOpacity style={styles.button} onPress={() => acceptReward()}>
+                <Text style={styles.buttonText}>Ta emot</Text>
+            </TouchableOpacity>
+        </Animated.View>
     </Animated.View>
   )
 }
 
 const styles = StyleSheet.create({
+    background: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        zIndex: 100,
+    },
     container: {
         position: 'absolute',
-        top: "50%",
+        top: "45%",
         left: "50%",
         width: 300,
-        height: 400,
+        height: 450,
         backgroundColor: 'white',
         borderRadius: 10,
         zIndex: 100,
         borderColor: colors.border,
         borderWidth: 1,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 5,
-            height: 5,
-        },
-        shadowOpacity: 0.1,
-
         flexDirection: 'column',
         alignItems: 'center',
         paddingHorizontal: 25,
@@ -97,10 +112,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: colors.text,
     },
+    icon: {
+        marginTop: 30,
+        marginBottom: 10,
+    },
     coinsText: {
         fontSize: 30,
         color: colors.text,
-        marginTop: 50,
     },
     coins: {
         fontSize: 40,
@@ -114,7 +132,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 70,
+        marginTop: 60,
     },
     buttonText: {
         color: 'white',

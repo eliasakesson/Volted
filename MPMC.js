@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 function MPMC() {
   const [subscribers, setSubscribers] = useState([]);
   const [message, setMessage] = useState("");
+  const [id] = useState((Math.random() * 1e6).toFixed(0));
 
   useEffect(() => {
     subscribers.forEach((subscriber) => {
@@ -24,7 +25,7 @@ function MPMC() {
     setMessage({ message, random : Math.random() });
   }
 
-  return { subscribe, unsubscribe, send };
+  return { id, subscribe, unsubscribe, send };
 }
 
 export default MPMC;

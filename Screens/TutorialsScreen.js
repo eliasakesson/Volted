@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedbac
 import { colors } from '../colors'
 import { Animated } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { tutorials, tutorialCard, difficulties } from '../tutorials/tutorials';
+import { tutorials, TutorialCard, difficulties } from '../tutorials/tutorials';
 
 export default function TutorialScreen({ navigation }) {
 
@@ -46,7 +46,7 @@ export default function TutorialScreen({ navigation }) {
         {tutorials?.map((tutorial, index) => {
           if (tutorial.difficulty !== selectedTab) return null;
 
-          return tutorialCard(tutorial, navigation)
+          return <TutorialCard key={index} tutorial={tutorial} navigation={navigation} />
       })}
       </View>
     </ScrollView>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View, ScrollView, Button } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { colors } from '../colors';
-import { tutorialCard, tutorials } from '../tutorials/tutorials';
-import { projectCard, projects } from '../projects/projects';
+import { TutorialCard, tutorials } from '../tutorials/tutorials';
+import { ProjectCard, projects } from '../projects/projects';
 
 export default function HomeScreen({ navigation }) {
 
@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation }) {
                 <AntDesign name="flag" size={50} color="#fff" />
             </TouchableOpacity>
             <View style={styles.row}>
-                <Text style={styles.header}>Populära projekt</Text>
+                <Text style={styles.header}>Populära uppgifter</Text>
                 <Button title='Visa alla' onPress={() => navigation.navigate("Projects")}></Button>
             </View>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.projects} snapToInterval={Dimensions.get('window').width - 80} contentContainerStyle={{paddingRight: 20}}>
@@ -26,19 +26,19 @@ export default function HomeScreen({ navigation }) {
 
                     return (
                         <View style={styles.project} key={index}>
-                            {projectCard(project, navigation)}
+                            <ProjectCard project={project} navigation={navigation} />
                         </View>
                     )
                 })}
             </ScrollView>
-            <View style={styles.row}>
+            <View style={styles.row}> 
                 <Text style={[styles.header, {marginTop: 10}]}>Populära lektioner</Text>
                 <Button title='Visa alla' onPress={() => navigation.navigate("Tutorials")}></Button>
             </View>
             {tutorials?.map((tutorial, index) => {
                 if (!tutorial.popular) return null
 
-                return tutorialCard(tutorial, navigation)
+                return <TutorialCard key={index} tutorial={tutorial} navigation={navigation} />
             })}
         </ScrollView>
     )

@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedbac
 import { colors } from '../colors'
 import { Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { projects as orgProjects, projectCard, difficulties } from '../projects/projects';
+import { projects as orgProjects, ProjectCard, difficulties } from '../projects/projects';
 
 export default function ProjectsScreen({ navigation }) {
 
@@ -40,7 +40,7 @@ export default function ProjectsScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.top}>
-        <Text style={styles.topText}>Projekt</Text>
+        <Text style={styles.topText}>Uppgifter</Text>
         <View style={styles.tabs}>
           <Animated.View style={[styles.tabSelected, {left: tabProgress}]} />
           <TouchableWithoutFeedback onPress={() => setSelectedTab(0)}>
@@ -77,7 +77,7 @@ export default function ProjectsScreen({ navigation }) {
         {projects?.filter(({difficulty, completed}) => (
           difficulty === selectedTab && (selectedFilter === 0 || (selectedFilter === 1 && !completed) || (selectedFilter === 2 && completed))
         ))?.map((project, index) => {
-          return projectCard(project, navigation)
+          return <ProjectCard key={index} project={project} navigation={navigation} />
         })}
       </View>
     </ScrollView>

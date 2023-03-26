@@ -13,10 +13,12 @@ export default function Lamp(props) {
     useEffect(() => {
         const { channel1, channel2 } = props
 
+        if (props.disabled) return
+
         channel1?.subscribe({callback: (message) => {
-            if (message.sender.indexOf(id) === -1) {
+            if (message.sender.indexOf(id) === -1 && channel1 && channel2) {
                 console.log("Lamp: ", message)
-                channel1?.send({...message, sender: [...message.sender, id]})
+                channel2.send({...message, sender: [...message.sender, id]})
 
                 if (message.volt > 0){
                     setLightStrength(message.volt)
@@ -31,9 +33,9 @@ export default function Lamp(props) {
         }, subscriber: id})
 
         channel2?.subscribe({callback: (message) => {
-            if (message.sender.indexOf(id) === -1) {
+            if (message.sender.indexOf(id) === -1 && channel1 && channel2) {
                 console.log("Lamp: ", message)
-                channel1?.send({...message, sender: [...message.sender, id]})
+                channel1.send({...message, sender: [...message.sender, id]})
 
                 if (message.volt > 0){
                     setLightStrength(message.volt)
