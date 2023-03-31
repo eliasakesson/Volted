@@ -1,4 +1,4 @@
-# Blixtlåset Electronics App
+# Volted
 
 Welcome to our mobile app that helps kids learn electronics by creating circuits on their phone!
 
