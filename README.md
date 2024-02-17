@@ -4,16 +4,16 @@
 <br />
 <div align="center">
   <a href="https://github.com/eliasakesson/volted">
-    <img src="assets/maskot.png" alt="Logo" width="120" height="120">
+    <img src="https://raw.githubusercontent.com/eliasakesson/Volted/master/assets/maskot.png" alt="Logo" width="120" height="120">
   </a>
 
-  <h3 align="center">Träsmak UF</h3>
+  <h3 align="center">Volted</h3>
 
   <p align="center">
     Award winning mobile application built with React Native
     <br />
     <br />
-    <a href="https://github.com/eliasakesson/volted"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/eliasakesson/volted"><strong>Explore the docs</strong></a>
   </p>
 </div>
 
@@ -21,9 +21,9 @@
 ## About The Project
 
 <div style="display:flex">
-  <img src="assets/mockup.png" alt="" width="49%" />
-  <img src="assets/pic1.PNG" alt="" width="15%" />
-  <img src="assets/pic2.PNG" alt="" width="15%" />
+  <img src="https://raw.githubusercontent.com/eliasakesson/Volted/master/assets/mockup.png" alt="" width="49%" />
+  <img src="https://raw.githubusercontent.com/eliasakesson/Volted/master/assets/pic1.PNG" alt="" width="15%" />
+  <img src="https://raw.githubusercontent.com/eliasakesson/Volted/master/assets/pic2.PNG" alt="" width="15%" />
 </div>
 
 ### Volted
@@ -89,10 +89,10 @@ Distributed under the Apache-2.0 License. See `LICENSE.txt` for more information
 
 <!-- CONTACT -->
 ## Contact
-
-<a href="https://www.linkedin.com/in/eliasakesson/" target="blank"><img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/800px-LinkedIn_logo_initials.png" alt="Elias Åkesson" height="40" width="40"/></a>
-.
-<a href="https://github.com/eliasakesson" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/github.svg" alt="Elias Åkesson" height="40" width="40" /></a>
+<div style="display:flex">
+  <a href="https://www.linkedin.com/in/eliasakesson/" target="blank"><img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/800px-LinkedIn_logo_initials.png" alt="Elias Åkesson" height="40" width="40"/></a>
+  <a href="https://github.com/eliasakesson" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/github.svg" alt="Elias Åkesson" height="40" width="40" /></a>
+</div>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
