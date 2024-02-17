@@ -20,7 +20,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<div style="display:flex">
+<div style="display:flex;gap:8px">
   <img src="https://raw.githubusercontent.com/eliasakesson/Volted/master/assets/mockup.png" alt="" width="49%" />
   <img src="https://raw.githubusercontent.com/eliasakesson/Volted/master/assets/pic1.PNG" alt="" width="15%" />
   <img src="https://raw.githubusercontent.com/eliasakesson/Volted/master/assets/pic2.PNG" alt="" width="15%" />
@@ -89,7 +89,7 @@ Distributed under the Apache-2.0 License. See `LICENSE.txt` for more information
 
 <!-- CONTACT -->
 ## Contact
-<div style="display:flex">
+<div style="display:flex;gap:8px">
   <a href="https://www.linkedin.com/in/eliasakesson/" target="blank"><img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/800px-LinkedIn_logo_initials.png" alt="Elias Åkesson" height="40" width="40"/></a>
   <a href="https://github.com/eliasakesson" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/github.svg" alt="Elias Åkesson" height="40" width="40" /></a>
 </div>
